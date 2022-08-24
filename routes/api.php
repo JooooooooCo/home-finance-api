@@ -8,4 +8,6 @@ Route::post('/login', 'App\Http\Controllers\UserAuthController@login');
 Route::middleware('auth:api')->group(function () {
     Route::post('/logout', 'App\Http\Controllers\UserAuthController@logout');
     Route::get('/me', 'App\Http\Controllers\UserAuthController@me');
+
+    Route::apiResource('/cost-center', 'App\Http\Controllers\CostCenterController');
 });
