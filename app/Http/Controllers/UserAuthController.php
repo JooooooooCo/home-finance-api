@@ -11,7 +11,7 @@ class UserAuthController extends Controller
 {
     /**
       * @OA\Post(
-      * path="/api/register",
+      * path="/api/user-register",
       * tags={"User"},
       * summary="User Register",
       *      @OA\RequestBody(
@@ -96,7 +96,7 @@ class UserAuthController extends Controller
 
     /**
       * @OA\Post(
-      * path="/api/login",
+      * path="/api/user-login",
       * tags={"User"},
       * summary="User Login",
       *     @OA\RequestBody(
@@ -175,7 +175,7 @@ class UserAuthController extends Controller
 
     /**
       * @OA\Post(
-      * path="/api/logout",
+      * path="/api/user-logout",
       * tags={"User"},
       * summary="User Logout",
       * security={{"bearerAuth":{}}},
@@ -213,7 +213,7 @@ class UserAuthController extends Controller
 
     /**
       * @OA\Get(
-      * path="/api/me",
+      * path="/api/user-details",
       * summary="Get User Details",
       * tags={"User"},
       * security={{"bearerAuth":{}}},
@@ -237,7 +237,7 @@ class UserAuthController extends Controller
       * @param  \Illuminate\Http\Request  $request
       * @return mixed
       */
-    public function me(Request $request)
+    public function details(Request $request)
     {
         return $request->user();
     }

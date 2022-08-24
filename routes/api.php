@@ -2,12 +2,12 @@
 
 use Illuminate\Support\Facades\Route;
 
-Route::post('/register', 'App\Http\Controllers\UserAuthController@register');
-Route::post('/login', 'App\Http\Controllers\UserAuthController@login');
+Route::post('/user-register', 'App\Http\Controllers\UserAuthController@register');
+Route::post('/user-login', 'App\Http\Controllers\UserAuthController@login');
 
 Route::middleware('auth:api')->group(function () {
-    Route::post('/logout', 'App\Http\Controllers\UserAuthController@logout');
-    Route::get('/me', 'App\Http\Controllers\UserAuthController@me');
+    Route::post('/user-logout', 'App\Http\Controllers\UserAuthController@logout');
+    Route::get('/user-details', 'App\Http\Controllers\UserAuthController@details');
 
     Route::apiResource('/cost-center', 'App\Http\Controllers\CostCenterController');
 });

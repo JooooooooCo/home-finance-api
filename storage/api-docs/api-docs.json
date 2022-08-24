@@ -419,13 +419,13 @@
                 ]
             }
         },
-        "/api/register": {
+        "/api/user-register": {
             "post": {
                 "tags": [
                     "User"
                 ],
                 "summary": "User Register",
-                "operationId": "c0354e671ce642c7b4ff996bc4e475a0",
+                "operationId": "22a1fa952200ae39f77f6fdeb025af51",
                 "requestBody": {
                     "required": true,
                     "content": {
@@ -544,13 +544,13 @@
                 }
             }
         },
-        "/api/login": {
+        "/api/user-login": {
             "post": {
                 "tags": [
                     "User"
                 ],
                 "summary": "User Login",
-                "operationId": "dde0e6a0694ae97f804fba7d40433c68",
+                "operationId": "7ae49f64a6970e40b24242ca3110aa7c",
                 "requestBody": {
                     "required": true,
                     "content": {
@@ -642,13 +642,13 @@
                 }
             }
         },
-        "/api/logout": {
+        "/api/user-logout": {
             "post": {
                 "tags": [
                     "User"
                 ],
                 "summary": "User Logout",
-                "operationId": "0b6b00e1e436126529647bb1b75c02d9",
+                "operationId": "3845c5ee3fb13275d5c4ecb533bd412a",
                 "responses": {
                     "200": {
                         "description": "Logout Successfully",
@@ -696,13 +696,13 @@
                 ]
             }
         },
-        "/api/me": {
+        "/api/user-details": {
             "get": {
                 "tags": [
                     "User"
                 ],
                 "summary": "Get User Details",
-                "operationId": "e0c0ac835866e76d664258d150430629",
+                "operationId": "c9552a2789daceeb477dfddbdf09ce06",
                 "responses": {
                     "200": {
                         "description": "Return the user details",
