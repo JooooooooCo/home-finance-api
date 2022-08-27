@@ -320,22 +320,4 @@ class CostCenterController extends Controller
             'message' => 'Cost Center deleted'
         ], 200);
     }
-
-    /**
-     * Verify if user is associated to cost center
-     *
-     * @param  \App\CostCenter  $cost_center
-     * @return bool
-     */
-    private function isUserOwnerCostCenter(CostCenter $cost_center)
-    {
-        $user_id = auth()->user()->id;
-
-        $cost_centers_user = CostCenterUser::where('user_id', $user_id)
-            ->where('cost_center_id', $cost_center->id)
-            ->get('cost_center_id')
-            ->toArray();
-
-        return !empty($cost_centers_user);
-    }
 }
