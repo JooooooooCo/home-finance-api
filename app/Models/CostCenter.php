@@ -11,4 +11,13 @@ class CostCenter extends Model
     protected $fillable = [
         'name'
     ];
+
+    /**
+     * The attributes that should be hidden for serialization.
+     *
+     * @var array<int, string>
+     */
+    protected $hidden = [
+        'laravel_through_key',
+    ];
 }

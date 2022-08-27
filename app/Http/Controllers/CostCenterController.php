@@ -47,14 +47,10 @@ class CostCenterController extends Controller
       */
     public function index()
     {
-        $user_id = auth()->user()->id;
-
-        $cost_centers_user = CostCenterUser::where('user_id', $user_id)->get('cost_center_id');
-
-        $cost_centers = CostCenter::whereIn('id', $cost_centers_user)->get();
-
         return response(
-            CostCenterResource::collection($cost_centers),
+            CostCenterResource::collection(
+                auth()->user()->costCenters
+            ),
             200
         );
     }

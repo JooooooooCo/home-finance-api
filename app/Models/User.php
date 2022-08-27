@@ -41,4 +41,19 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    /**
+     * Get all the Cost Centers that are associated to the user
+     */
+    public function costCenters()
+    {
+        return $this->hasManyThrough(
+            CostCenter::class,
+            CostCenterUser::class,
+            'user_id',
+            'id',
+            'id',
+            'cost_center_id'
+        );
+    }
 }
