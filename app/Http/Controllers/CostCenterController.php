@@ -291,6 +291,14 @@ class CostCenterController extends Controller
       *          ),
       *      ),
       *      @OA\Response(
+      *          response=500,
+      *          description="Internal Server Error",
+      *          @OA\JsonContent(
+      *               type="object",
+      *               @OA\Property(property="message", type="string", example="Internal error"),
+      *          ),
+      *      ),
+      *      @OA\Response(
       *          response=422,
       *          description="Unprocessable Content",
       *          @OA\JsonContent(
@@ -313,15 +321,27 @@ class CostCenterController extends Controller
             ], 422);
         }
 
-        $cost_center_user = CostCenterUser::where('user_id', auth()->user()->id)
-            ->where('cost_center_id', $cost_center->id);
+        try {
+            \DB::beginTransaction();
 
-        $cost_center_user->delete();
+            $cost_center_user = CostCenterUser::where('user_id', auth()->user()->id)
+                ->where('cost_center_id', $cost_center->id);
 
-        $cost_center->delete();
+            $cost_center_user->delete();
 
-        return response([
-            'message' => 'Cost Center deleted'
-        ], 200);
+            $cost_center->delete();
+
+            \DB::commit();
+
+            return response([
+                'message' => 'Cost Center deleted'
+            ], 200);
+        } catch (\PDOException $e) {
+            \DB::rollBack();
+
+            return response([
+                'message' => $this->handleErrorMessage($e->getMessage())
+            ], 500);
+        }
     }
 }
