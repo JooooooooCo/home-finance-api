@@ -257,6 +257,14 @@ class CostCenterController extends Controller
       *               @OA\Property(property="message", type="string", example="Unauthenticated."),
       *          ),
       *      ),
+      *      @OA\Response(
+      *          response=500,
+      *          description="Internal Server Error",
+      *          @OA\JsonContent(
+      *               type="object",
+      *               @OA\Property(property="message", type="string", example="Internal error"),
+      *          ),
+      *      ),
       *      @OA\Response(response=400, description="Bad request"),
       *      @OA\Response(response=404, description="Resource Not Found"),
       * ),
@@ -273,15 +281,27 @@ class CostCenterController extends Controller
             ], 422);
         }
 
-        $cost_center->update($request->all());
+        try {
+            \DB::beginTransaction();
 
-        $return_data = new CostCenterResource($cost_center);
-        $return_data['message'] = 'Success';
+            $cost_center->update($request->all());
 
-        return response(
-            $return_data,
-            200
-        );
+            $return_data = new CostCenterResource($cost_center);
+            $return_data['message'] = 'Success, cost center updated';
+
+            \DB::commit();
+
+            return response(
+                $return_data,
+                200
+            );
+        } catch (\PDOException $e) {
+            \DB::rollBack();
+
+            return response([
+                'message' => $this->handleErrorMessage($e->getMessage())
+            ], 500);
+        }
     }
 
     /**
