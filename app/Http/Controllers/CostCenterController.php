@@ -334,7 +334,7 @@ class CostCenterController extends Controller
             \DB::commit();
 
             return response([
-                'message' => 'Cost Center deleted'
+                'message' => 'Success, cost center deleted'
             ], 200);
         } catch (\PDOException $e) {
             \DB::rollBack();
