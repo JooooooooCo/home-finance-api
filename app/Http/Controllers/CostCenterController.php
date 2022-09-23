@@ -175,7 +175,7 @@ class CostCenterController extends Controller
     {
         if (!$this->isUserOwnerCostCenter($cost_center)) {
             return response([
-                'error_message' => 'Object not found'
+                'message' => 'Object not found'
             ], 422);
         }
 
@@ -223,6 +223,7 @@ class CostCenterController extends Controller
       *               @OA\Property(property="name", type="string"),
       *               @OA\Property(property="created_at", type="string"),
       *               @OA\Property(property="updated_at", type="string"),
+      *               @OA\Property(property="message", type="string"),
       *         ),
       *      ),
       *      @OA\Response(
@@ -245,14 +246,17 @@ class CostCenterController extends Controller
     {
         if (!$this->isUserOwnerCostCenter($cost_center)) {
             return response([
-                'error_message' => 'Object not found'
+                'message' => 'Object not found'
             ], 422);
         }
 
         $cost_center->update($request->all());
 
+        $return_data = new CostCenterResource($cost_center);
+        $return_data['message'] = 'Success';
+
         return response(
-            new CostCenterResource($cost_center),
+            $return_data,
             200
         );
     }
@@ -291,7 +295,7 @@ class CostCenterController extends Controller
       *          description="Unprocessable Content",
       *          @OA\JsonContent(
       *               type="object",
-      *               @OA\Property(property="error_message", type="string", example="Object not found"),
+      *               @OA\Property(property="message", type="string", example="Object not found"),
       *          ),
       *      ),
       *      @OA\Response(response=400, description="Bad request"),
@@ -305,7 +309,7 @@ class CostCenterController extends Controller
     {
         if (!$this->isUserOwnerCostCenter($cost_center)) {
             return response([
-                'error_message' => 'Object not found'
+                'message' => 'Object not found'
             ], 422);
         }
 

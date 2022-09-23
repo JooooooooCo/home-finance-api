@@ -303,6 +303,9 @@
                                         },
                                         "updated_at": {
                                             "type": "string"
+                                        },
+                                        "message": {
+                                            "type": "string"
                                         }
                                     },
                                     "type": "object"
@@ -395,7 +398,7 @@
                             "application/json": {
                                 "schema": {
                                     "properties": {
-                                        "error_message": {
+                                        "message": {
                                             "type": "string",
                                             "example": "Object not found"
                                         }
@@ -623,7 +626,7 @@
                             "application/json": {
                                 "schema": {
                                     "properties": {
-                                        "error_message": {
+                                        "message": {
                                             "type": "string",
                                             "example": "Invalid login details. Please try again"
                                         }

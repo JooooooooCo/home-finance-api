@@ -136,7 +136,7 @@ class UserAuthController extends Controller
       *          description="Invalid login details. Please try again",
       *          @OA\JsonContent(
       *               type="object",
-      *               @OA\Property(property="error_message", type="string", example="Invalid login details. Please try again"),
+      *               @OA\Property(property="message", type="string", example="Invalid login details. Please try again"),
       *          ),
       *      ),
       *      @OA\Response(response=400, description="Bad request"),
@@ -155,7 +155,7 @@ class UserAuthController extends Controller
 
         if (!auth()->attempt($data)) {
             return response([
-                'error_message' => 'Invalid login details. Please try again'
+                'message' => 'Invalid login details. Please try again'
             ], 422);
         }
 
