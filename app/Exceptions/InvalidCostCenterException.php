@@ -6,7 +6,11 @@ use Exception;
 
 class InvalidCostCenterException extends Exception
 {
-    protected $message = "You must send the 'X-Tenant-ID' (CostCenter Id) key in the request header";
+    protected $message;
+
+    public function __construct(string $message = "Invalid 'X-Tenant-ID' (CostCenter Id)") {
+        $this->message = $message;
+    }
 
     public function render()
     {

@@ -21,6 +21,8 @@ class VerifyTenantHeader
             return $next($request);
         }
 
-        throw new InvalidCostCenterException;
+        throw new InvalidCostCenterException(
+            "You must send the 'X-Tenant-ID' (CostCenter Id) key in the request header"
+        );
     }
 }
