@@ -175,6 +175,51 @@ class UserAuthController extends Controller
 
     /**
       * @OA\Post(
+      * path="/api/user-current-cost-center",
+      * tags={"User"},
+      * summary="User set current Cost Center (tenant)",
+      * security={{"bearerAuth":{}}},
+      *      @OA\Parameter(
+      *          name="X-Tenant-ID",
+      *          in="header",
+      *          required=true,
+      *          description="The cost center ID",
+      *          @OA\Schema(type="integer"),
+      *      ),
+      *      @OA\Response(
+      *          response=200,
+      *          description="Successfully",
+      *          @OA\JsonContent(
+      *               type="object",
+      *               @OA\Property(property="message", type="string", example="Success"),
+      *          ),
+      *      ),
+      *      @OA\Response(
+      *          response=401,
+      *          description="Unauthorized",
+      *          @OA\JsonContent(
+      *               type="object",
+      *               @OA\Property(property="message", type="string", example="Unauthenticated."),
+      *          ),
+      *      ),
+      *      @OA\Response(response=400, description="Bad request"),
+      *      @OA\Response(response=404, description="Resource Not Found"),
+      * ),
+      *
+      * @param  \Illuminate\Http\Request  $request
+      * @return \Illuminate\Http\Response
+      */
+    public function currentCostCenter(Request $request)
+    {
+        auth()->user()->update(['current_cost_center_id' => $request->header('X-Tenant-ID')]);
+
+        return response([
+            'message' => 'Success'
+        ], 200);
+    }
+
+    /**
+      * @OA\Post(
       * path="/api/user-logout",
       * tags={"User"},
       * summary="User Logout",

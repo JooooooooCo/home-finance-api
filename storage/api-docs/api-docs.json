@@ -693,6 +693,71 @@
                 }
             }
         },
+        "/api/user-current-cost-center": {
+            "post": {
+                "tags": [
+                    "User"
+                ],
+                "summary": "User set current Cost Center (tenant)",
+                "operationId": "570ee00b9b0a4328eb6d1f7a24e6fb42",
+                "parameters": [
+                    {
+                        "name": "X-Tenant-ID",
+                        "in": "header",
+                        "description": "The cost center ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Success"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Unauthenticated."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request"
+                    },
+                    "404": {
+                        "description": "Resource Not Found"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
         "/api/user-logout": {
             "post": {
                 "tags": [

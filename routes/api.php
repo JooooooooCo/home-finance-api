@@ -12,5 +12,6 @@ Route::middleware('auth:api')->group(function () {
     Route::apiResource('/cost-center', 'App\Http\Controllers\CostCenterController');
 
     Route::middleware('verify.tenant.header')->group(function () {
+        Route::post('/user-current-cost-center', 'App\Http\Controllers\UserAuthController@currentCostCenter');
     });
 });
