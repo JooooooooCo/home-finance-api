@@ -47,12 +47,11 @@ class CostCenterController extends Controller
       */
     public function index()
     {
-        return response(
-            CostCenterResource::collection(
-                auth()->user()->costCenters
-            ),
-            200
+        $costCenters = CostCenterResource::collection(
+            auth()->user()->costCenters
         );
+
+        return $this->sendResponse($costCenters, 'Cost centers collection');
     }
 
     /**
@@ -138,20 +137,14 @@ class CostCenterController extends Controller
             ]);
 
             $return_data = new CostCenterResource($cost_center);
-            $return_data['message'] = 'Success, cost center created';
 
             \DB::commit();
 
-            return response(
-                $return_data,
-                200
-            );
+            return $this->sendResponse($return_data, 'Success, cost center created');
         } catch (\PDOException $e) {
             \DB::rollBack();
 
-            return response([
-                'message' => $this->handleErrorMessage($e->getMessage())
-            ], 500);
+            return $this->sendError($e->getMessage(), 500);
         }
     }
 
@@ -197,15 +190,12 @@ class CostCenterController extends Controller
     public function show(CostCenter $cost_center)
     {
         if (!$this->isUserOwnerCostCenter($cost_center)) {
-            return response([
-                'message' => 'Object not found'
-            ], 422);
+            return $this->sendError('Object not found', 422);
         }
 
-        return response(
-            new CostCenterResource($cost_center),
-            200
-        );
+        $return_data = new CostCenterResource($cost_center);
+
+        return $this->sendResponse($return_data, 'Cost center details');
     }
 
     /**
@@ -276,9 +266,7 @@ class CostCenterController extends Controller
     public function update(Request $request, CostCenter $cost_center)
     {
         if (!$this->isUserOwnerCostCenter($cost_center)) {
-            return response([
-                'message' => 'Object not found'
-            ], 422);
+            return $this->sendError('Object not found', 422);
         }
 
         try {
@@ -287,20 +275,14 @@ class CostCenterController extends Controller
             $cost_center->update($request->all());
 
             $return_data = new CostCenterResource($cost_center);
-            $return_data['message'] = 'Success, cost center updated';
 
             \DB::commit();
 
-            return response(
-                $return_data,
-                200
-            );
+            return $this->sendResponse($return_data, 'Success, cost center updated');
         } catch (\PDOException $e) {
             \DB::rollBack();
 
-            return response([
-                'message' => $this->handleErrorMessage($e->getMessage())
-            ], 500);
+            return $this->sendError($e->getMessage(), 500);
         }
     }
 
@@ -359,9 +341,7 @@ class CostCenterController extends Controller
     public function destroy(CostCenter $cost_center)
     {
         if (!$this->isUserOwnerCostCenter($cost_center)) {
-            return response([
-                'message' => 'Object not found'
-            ], 422);
+            return $this->sendError('Object not found', 422);
         }
 
         try {
@@ -376,15 +356,11 @@ class CostCenterController extends Controller
 
             \DB::commit();
 
-            return response([
-                'message' => 'Success, cost center deleted'
-            ], 200);
+            return $this->sendResponse([], 'Success, cost center deleted');
         } catch (\PDOException $e) {
             \DB::rollBack();
 
-            return response([
-                'message' => $this->handleErrorMessage($e->getMessage())
-            ], 500);
+            return $this->sendError($e->getMessage(), 500);
         }
     }
 }

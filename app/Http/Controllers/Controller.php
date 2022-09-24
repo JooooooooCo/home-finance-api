@@ -24,12 +24,52 @@ class Controller extends BaseController
     use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
 
     /**
+     * Success response method.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    protected function sendResponse($result, $message = 'Success')
+    {
+    	$response = [
+            'error' => false,
+            'message' => $message,
+        ];
+
+        if (!isset($result['data'])) {
+            $response['data'] = $result;
+        } else {
+            $response = $response + $result;
+        }
+
+        return response($response, 200);
+    }
+
+    /**
+     * Error response method.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    protected function sendError($error = 'Internal error', $code = 404, $errorMessages = [])
+    {
+    	$response = [
+            'error' => true,
+            'message' => $this->handleErrorMessage($error),
+        ];
+
+        if(!empty($errorMessages)){
+            $response['data'] = $errorMessages;
+        }
+
+        return response($response, $code);
+    }
+
+    /**
      * Verify if user is associated to cost center
      *
      * @param  \App\CostCenter  $cost_center
      * @return bool
      */
-    public function isUserOwnerCostCenter(CostCenter $cost_center)
+    protected function isUserOwnerCostCenter(CostCenter $cost_center)
     {
         $allCostCenters = auth()->user()->costCenters()->where('id', $cost_center->id)->get();
 
@@ -42,7 +82,7 @@ class Controller extends BaseController
      * @param  string $error_message
      * @return string
      */
-    public function handleErrorMessage(string $error_message)
+    private function handleErrorMessage(string $error_message)
     {
         $error_message_return = 'Internal error.';
 
