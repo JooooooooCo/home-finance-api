@@ -130,11 +130,7 @@ class CostCenterController extends Controller
             \DB::beginTransaction();
 
             $cost_center = CostCenter::create($data);
-
-            CostCenterUser::create([
-                'user_id' => $user_id,
-                'cost_center_id' => $cost_center->id
-            ]);
+            $cost_center->users()->attach($user_id);
 
             $return_data = new CostCenterResource($cost_center);
 

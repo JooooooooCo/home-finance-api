@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class CostCenterUser extends Model
 {
-    protected $table = 'cost_centers_users';
+    protected $table = 'cost_center_user';
 
     protected $fillable = [
         'cost_center_id',

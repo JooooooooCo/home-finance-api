@@ -21,6 +21,7 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'current_cost_center_id',
     ];
 
     /**

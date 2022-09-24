@@ -13,12 +13,12 @@ class CreateCostCentersUsersTable extends Migration
      */
     public function up()
     {
-        Schema::create('cost_centers_users', function (Blueprint $table) {
+        Schema::create('cost_center_user', function (Blueprint $table) {
             $table->unsignedInteger('cost_center_id');
             $table->unsignedBigInteger('user_id');
             $table->timestamp('created_at')->useCurrent();
             $table->timestamp('updated_at')->useCurrent()->useCurrentOnUpdate();
-            
+
             $table->foreign('cost_center_id')->references('id')->on('cost_centers');
             $table->foreign('user_id')->references('id')->on('users');
         });
@@ -31,6 +31,6 @@ class CreateCostCentersUsersTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('cost_centers_users');
+        Schema::dropIfExists('cost_center_user');
     }
 }
