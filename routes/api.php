@@ -8,10 +8,10 @@ Route::post('/user-login', 'App\Http\Controllers\UserAuthController@login');
 Route::middleware('auth:api')->group(function () {
     Route::post('/user-logout', 'App\Http\Controllers\UserAuthController@logout');
     Route::get('/user-details', 'App\Http\Controllers\UserAuthController@details');
-
-    Route::apiResource('/cost-center', 'App\Http\Controllers\CostCenterController');
+    Route::apiResource('/cost-center', 'App\Http\Controllers\CostCenterController', ['only' => ['store']]);
 
     Route::middleware('verify.tenant.header')->group(function () {
+        Route::apiResource('/cost-center', 'App\Http\Controllers\CostCenterController', ['except' => ['store']]);
         Route::post('/user-current-cost-center', 'App\Http\Controllers\UserAuthController@currentCostCenter');
     });
 });
