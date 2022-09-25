@@ -28,7 +28,7 @@ class Controller extends BaseController
      *
      * @return \Illuminate\Http\Response
      */
-    protected function sendResponse($result, $message = 'Success')
+    protected function sendResponse($result = [], $message = 'Success')
     {
     	$response = [
             'error' => false,
