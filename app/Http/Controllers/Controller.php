@@ -7,6 +7,7 @@ use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Routing\Controller as BaseController;
+use App\Exceptions\InvalidCostCenterException;
 
 /**
  * @OA\Info(
@@ -66,14 +67,22 @@ class Controller extends BaseController
     /**
      * Verify if user is associated to cost center
      *
-     * @param  \App\CostCenter  $cost_center
+     * @param  string  $cost_center_id
      * @return bool
      */
-    protected function isUserOwnerCostCenter(CostCenter $cost_center)
+    public function verifyCostCenterBelongsUser(string $cost_center_id)
     {
-        $allCostCenters = auth()->user()->costCenters()->where('id', $cost_center->id)->get();
+        $costCenters = auth()->user()->costCenters;
 
-        return !$allCostCenters->isEmpty();
+        foreach ($costCenters as $value) {
+            if ($cost_center_id == $value->id) {
+                return;
+            }
+        }
+
+        throw new InvalidCostCenterException(
+            "Object not found"
+        );
     }
 
     /**

@@ -174,9 +174,7 @@ class CostCenterController extends Controller
       */
     public function show(CostCenter $cost_center)
     {
-        if (!$this->isUserOwnerCostCenter($cost_center)) {
-            return $this->sendError('Object not found', 422);
-        }
+        $this->verifyCostCenterBelongsUser($cost_center->id);
 
         $return_data = new CostCenterResource($cost_center);
 
@@ -242,9 +240,7 @@ class CostCenterController extends Controller
       */
     public function update(Request $request, CostCenter $cost_center)
     {
-        if (!$this->isUserOwnerCostCenter($cost_center)) {
-            return $this->sendError('Object not found', 422);
-        }
+        $this->verifyCostCenterBelongsUser($cost_center->id);
 
         try {
             \DB::beginTransaction();
@@ -317,9 +313,7 @@ class CostCenterController extends Controller
       */
     public function destroy(CostCenter $cost_center)
     {
-        if (!$this->isUserOwnerCostCenter($cost_center)) {
-            return $this->sendError('Object not found', 422);
-        }
+        $this->verifyCostCenterBelongsUser($cost_center->id);
 
         try {
             \DB::beginTransaction();
