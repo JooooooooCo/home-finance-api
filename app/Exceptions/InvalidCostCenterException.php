@@ -14,7 +14,8 @@ class InvalidCostCenterException extends Exception
 
     public function render()
     {
-        return response()->json([
+        return response([
+            'error' => true,
             'message' => $this->message,
         ], 400);
     }
