@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Http\Request;
-
+use Illuminate\Support\Facades\Validator;
 
 class UserAuthController extends Controller
 {
@@ -60,11 +60,17 @@ class UserAuthController extends Controller
       */
     public function register(Request $request)
     {
-        $data = $request->validate([
+        $data = $request->all();
+
+        $validator = Validator::make($data, [
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
             'password' => 'required|confirmed|string|min:8'
         ]);
+
+        if($validator->fails()){
+            return $this->sendError("Validation Error", 422, $validator->errors());
+        }
 
         $data['password'] = bcrypt($request->password);
 
@@ -128,10 +134,16 @@ class UserAuthController extends Controller
       */
     public function login(Request $request)
     {
-        $data = $request->validate([
+        $data = $request->all();
+
+        $validator = Validator::make($data, [
             'email' => 'email|required',
             'password' => 'required'
         ]);
+
+        if($validator->fails()){
+            return $this->sendError("Validation Error", 422, $validator->errors());
+        }
 
         if (!auth()->attempt($data)) {
             return $this->sendError("Invalid login details. Please try again", 422);
