@@ -48,13 +48,6 @@ class User extends Authenticatable
      */
     public function costCenters()
     {
-        return $this->hasManyThrough(
-            CostCenter::class,
-            CostCenterUser::class,
-            'user_id',
-            'id',
-            'id',
-            'cost_center_id'
-        );
+        return $this->belongsToMany(CostCenter::class);
     }
 }
