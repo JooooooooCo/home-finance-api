@@ -11,7 +11,7 @@ class UserAuthController extends Controller
 {
     /**
       * @OA\Post(
-      * path="/api/user-register",
+      * path="/api/user/register",
       * tags={"User"},
       * summary="User Register",
       *      @OA\RequestBody(
@@ -91,7 +91,7 @@ class UserAuthController extends Controller
 
     /**
       * @OA\Post(
-      * path="/api/user-login",
+      * path="/api/user/login",
       * tags={"User"},
       * summary="User Login",
       *     @OA\RequestBody(
@@ -164,7 +164,7 @@ class UserAuthController extends Controller
 
     /**
       * @OA\Post(
-      * path="/api/user-current-cost-center",
+      * path="/api/user/current-cost-center",
       * tags={"User"},
       * summary="User set current Cost Center (tenant)",
       * security={{"bearerAuth":{}}},
@@ -207,7 +207,7 @@ class UserAuthController extends Controller
 
     /**
       * @OA\Post(
-      * path="/api/user-logout",
+      * path="/api/user/logout",
       * tags={"User"},
       * summary="User Logout",
       * security={{"bearerAuth":{}}},
@@ -243,7 +243,7 @@ class UserAuthController extends Controller
 
     /**
       * @OA\Get(
-      * path="/api/user-details",
+      * path="/api/user/details",
       * summary="Get User Details",
       * tags={"User"},
       * security={{"bearerAuth":{}}},

@@ -5,7 +5,7 @@
         "version": "1.0.0"
     },
     "paths": {
-        "/api/cost-center": {
+        "/api/settings/cost-center": {
             "get": {
                 "tags": [
                     "Cost Centers"
@@ -165,7 +165,7 @@
                 ]
             }
         },
-        "/api/cost-center/{id}": {
+        "/api/settings/cost-center/{id}": {
             "get": {
                 "tags": [
                     "Cost Centers"
@@ -442,7 +442,7 @@
                 ]
             }
         },
-        "/api/user-register": {
+        "/api/user/register": {
             "post": {
                 "tags": [
                     "User"
@@ -538,7 +538,7 @@
                 }
             }
         },
-        "/api/user-login": {
+        "/api/user/login": {
             "post": {
                 "tags": [
                     "User"
@@ -619,7 +619,7 @@
                 }
             }
         },
-        "/api/user-current-cost-center": {
+        "/api/user/current-cost-center": {
             "post": {
                 "tags": [
                     "User"
@@ -684,7 +684,7 @@
                 ]
             }
         },
-        "/api/user-logout": {
+        "/api/user/logout": {
             "post": {
                 "tags": [
                     "User"
@@ -738,7 +738,7 @@
                 ]
             }
         },
-        "/api/user-details": {
+        "/api/user/details": {
             "get": {
                 "tags": [
                     "User"

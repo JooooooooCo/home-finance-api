@@ -13,7 +13,7 @@ class CostCenterController extends Controller
 {
     /**
       * @OA\Get(
-      * path="/api/cost-center",
+      * path="/api/settings/cost-center",
       * summary="Get list of Cost Centers",
       * tags={"Cost Centers"},
       * security={{"bearerAuth":{}}},
@@ -56,7 +56,7 @@ class CostCenterController extends Controller
 
     /**
       * @OA\Post(
-      * path="/api/cost-center",
+      * path="/api/settings/cost-center",
       * tags={"Cost Centers"},
       * summary="Store a new Cost Center",
       * security={{"bearerAuth":{}}},
@@ -135,7 +135,7 @@ class CostCenterController extends Controller
 
     /**
       * @OA\Get(
-      * path="/api/cost-center/{id}",
+      * path="/api/settings/cost-center/{id}",
       * summary="Get a Cost Centers",
       * tags={"Cost Centers"},
       * security={{"bearerAuth":{}}},
@@ -185,7 +185,7 @@ class CostCenterController extends Controller
 
     /**
       * @OA\Put(
-      * path="/api/cost-center/{id}",
+      * path="/api/settings/cost-center/{id}",
       * tags={"Cost Centers"},
       * summary="Update a Cost Center",
       * security={{"bearerAuth":{}}},
@@ -265,7 +265,7 @@ class CostCenterController extends Controller
 
     /**
       * @OA\Delete(
-      * path="/api/cost-center/{id}",
+      * path="/api/settings/cost-center/{id}",
       * tags={"Cost Centers"},
       * summary="Delete a Cost Center",
       * security={{"bearerAuth":{}}},
