@@ -5,6 +5,7 @@ namespace App\Http\Middleware;
 use Illuminate\Http\Request;
 use Closure;
 use App\Exceptions\InvalidCostCenterException;
+use App\Http\Controllers\Controller;
 
 class VerifyTenantHeader
 {
@@ -17,7 +18,12 @@ class VerifyTenantHeader
      */
     public function handle(Request $request, Closure $next)
     {
-        if ($request->header('X-Tenant-ID') > 0) {
+        $x_tenant_id = $request->header('X-Tenant-ID');
+
+        if ($x_tenant_id > 0) {
+            $controller = new Controller();
+            $controller->verifyCostCenterBelongsUser($x_tenant_id);
+            
             return $next($request);
         }
 
