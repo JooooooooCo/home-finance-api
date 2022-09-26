@@ -16,17 +16,6 @@ class UserAuthController extends Controller
       * summary="User Register",
       *      @OA\RequestBody(
       *          required=true,
-      *          @OA\MediaType(
-      *             mediaType="multipart/form-data",
-      *             @OA\Schema(
-      *                type="object",
-      *                required={"name","email", "password", "password_confirmation"},
-      *                @OA\Property(property="name", type="string", maxLength=255),
-      *                @OA\Property(property="email", type="string", maxLength=255),
-      *                @OA\Property(property="password", type="string", minLength=8),
-      *                @OA\Property(property="password_confirmation", type="string", minLength=8),
-      *             ),
-      *          ),
       *          @OA\JsonContent(
       *             type="object",
       *             required={"name","email", "password", "password_confirmation"},
@@ -101,15 +90,6 @@ class UserAuthController extends Controller
       * summary="User Login",
       *     @OA\RequestBody(
       *         required=true,
-      *         @OA\MediaType(
-      *            mediaType="multipart/form-data",
-      *            @OA\Schema(
-      *               type="object",
-      *               required={"email", "password"},
-      *               @OA\Property(property="email", type="string"),
-      *               @OA\Property(property="password", type="string")
-      *            ),
-      *         ),
       *         @OA\JsonContent(
       *               type="object",
       *               required={"email", "password"},
@@ -160,7 +140,6 @@ class UserAuthController extends Controller
         }
 
         $token = auth()->user()->createToken('API Token')->accessToken;
-
 
         $userResponse = [
             'name' => auth()->user()->name,

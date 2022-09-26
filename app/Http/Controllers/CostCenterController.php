@@ -62,14 +62,6 @@ class CostCenterController extends Controller
       * security={{"bearerAuth":{}}},
       *      @OA\RequestBody(
       *          required=true,
-      *          @OA\MediaType(
-      *             mediaType="multipart/form-data",
-      *             @OA\Schema(
-      *                type="object",
-      *                required={"name"},
-      *                @OA\Property(property="name", type="string", maxLength=200),
-      *             ),
-      *          ),
       *          @OA\JsonContent(
       *             type="object",
       *             required={"name"},
@@ -209,14 +201,6 @@ class CostCenterController extends Controller
       *      ),
       *      @OA\RequestBody(
       *          required=true,
-      *          @OA\MediaType(
-      *             mediaType="multipart/form-data",
-      *             @OA\Schema(
-      *                type="object",
-      *                required={"name"},
-      *                @OA\Property(property="name", type="string", maxLength=200),
-      *             ),
-      *          ),
       *          @OA\JsonContent(
       *             type="object",
       *             required={"name"},

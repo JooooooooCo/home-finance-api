@@ -78,20 +78,6 @@
                 "requestBody": {
                     "required": true,
                     "content": {
-                        "multipart/form-data": {
-                            "schema": {
-                                "required": [
-                                    "name"
-                                ],
-                                "properties": {
-                                    "name": {
-                                        "type": "string",
-                                        "maxLength": 200
-                                    }
-                                },
-                                "type": "object"
-                            }
-                        },
                         "application/json": {
                             "schema": {
                                 "required": [
@@ -271,20 +257,6 @@
                 "requestBody": {
                     "required": true,
                     "content": {
-                        "multipart/form-data": {
-                            "schema": {
-                                "required": [
-                                    "name"
-                                ],
-                                "properties": {
-                                    "name": {
-                                        "type": "string",
-                                        "maxLength": 200
-                                    }
-                                },
-                                "type": "object"
-                            }
-                        },
                         "application/json": {
                             "schema": {
                                 "required": [
@@ -480,35 +452,6 @@
                 "requestBody": {
                     "required": true,
                     "content": {
-                        "multipart/form-data": {
-                            "schema": {
-                                "required": [
-                                    "name",
-                                    "email",
-                                    "password",
-                                    "password_confirmation"
-                                ],
-                                "properties": {
-                                    "name": {
-                                        "type": "string",
-                                        "maxLength": 255
-                                    },
-                                    "email": {
-                                        "type": "string",
-                                        "maxLength": 255
-                                    },
-                                    "password": {
-                                        "type": "string",
-                                        "minLength": 8
-                                    },
-                                    "password_confirmation": {
-                                        "type": "string",
-                                        "minLength": 8
-                                    }
-                                },
-                                "type": "object"
-                            }
-                        },
                         "application/json": {
                             "schema": {
                                 "required": [
@@ -605,23 +548,6 @@
                 "requestBody": {
                     "required": true,
                     "content": {
-                        "multipart/form-data": {
-                            "schema": {
-                                "required": [
-                                    "email",
-                                    "password"
-                                ],
-                                "properties": {
-                                    "email": {
-                                        "type": "string"
-                                    },
-                                    "password": {
-                                        "type": "string"
-                                    }
-                                },
-                                "type": "object"
-                            }
-                        },
                         "application/json": {
                             "schema": {
                                 "required": [
