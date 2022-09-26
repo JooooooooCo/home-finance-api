@@ -77,10 +77,10 @@ class UserAuthController extends Controller
             'email' => $user->email
         ];
 
-        return response([
+        return $this->sendResponse([
             'user' => $userResponse,
             'token' => $token
-        ], 200);
+        ]);
     }
 
     /**
@@ -134,9 +134,7 @@ class UserAuthController extends Controller
         ]);
 
         if (!auth()->attempt($data)) {
-            return response([
-                'message' => 'Invalid login details. Please try again'
-            ], 422);
+            return $this->sendError("Invalid login details. Please try again", 422);
         }
 
         $token = auth()->user()->createToken('API Token')->accessToken;
@@ -146,10 +144,10 @@ class UserAuthController extends Controller
             'email' => auth()->user()->email
         ];
 
-        return response([
+        return $this->sendResponse([
             'user' => $userResponse,
             'token' => $token
-        ], 200);
+        ]);
     }
 
     /**
@@ -192,9 +190,7 @@ class UserAuthController extends Controller
     {
         auth()->user()->update(['current_cost_center_id' => $request->header('X-Tenant-ID')]);
 
-        return response([
-            'message' => 'Success'
-        ], 200);
+        return $this->sendResponse();
     }
 
     /**
@@ -230,9 +226,7 @@ class UserAuthController extends Controller
         $token = $request->user()->token();
         $token->revoke();
 
-        return response([
-            'message' => 'You have been successfully logged out!'
-        ], 200);
+        return $this->sendResponse([], 'You have been successfully logged out!');
     }
 
     /**
@@ -263,6 +257,6 @@ class UserAuthController extends Controller
       */
     public function details(Request $request)
     {
-        return $request->user();
+        return $this->sendResponse($request->user());
     }
 }

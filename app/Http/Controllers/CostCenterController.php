@@ -112,10 +112,7 @@ class CostCenterController extends Controller
         ]);
 
         if($validator->fails()){
-            return response([
-                'error' => $validator->errors(),
-                'message' => 'Validation Error'
-            ]);
+            return $this->sendError("Validation Error", 422, $validator->errors());
         }
 
         try {
