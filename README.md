@@ -67,4 +67,16 @@ Find below a screenshot of API documentation
 
 ![API Documentation](./storage/api-docs/api-docs.png?raw=true "API Documentation")
 
+### Update swagger documentation
+
+If you need update swagger documentation, you'll need run below commands.
+
+```
+$ docker exec home_finance_api php artisan l5-swagger:generate
+```
+
+```
+$ docker exec home_finance_api php artisan vendor:publish --provider "L5Swagger\L5SwaggerServiceProvider"
+```
+
 ## I hope you enjoy it! 8)
