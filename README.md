@@ -32,32 +32,36 @@ DB_USERNAME=root
 DB_PASSWORD=
 ```
 
-Now, you will need `composer` installed, to install all dependencies.
-Run all commands below:
+Now, you will need `docker` installed. Run this command to build and up the docker container:
 
 ```
-composer install
-```
-```
-php artisan key:generate
-```
-```
-php artisan migrate
-```
-```
-php artisan db:seed
-```
-```
-php artisan serve --host=YOURHOST --port=YOURPORT
+$ docker-compose up -d
 ```
 
-Great, now the API is available at `YOURHOST:YOURPORT`
+Then, run the below commands to prepare the app:
+
+```
+$ docker exec home_finance_api php artisan key:generate
+```
+```
+$ docker exec home_finance_api php artisan migrate
+```
+```
+$ docker exec home_finance_api php artisan passport:install --force
+```
+Finally, we'll need to run the following command to serve the app. This must be done every time the container is initialized.
+
+```
+$ docker exec home_finance_api php artisan serve --host=0.0.0.0 --port=8000
+```
+
+Great, now the API is available at `127.0.0.1:8000`
 
 ## Documentation
 
-You can check documentation and test all the endpoints on swagger, available at `YOURHOST:YOURPORT/api/documentation`
+You can check documentation and test all the endpoints on swagger, available at `127.0.0.1:8000/api/documentation`
 
-To test endpoints using authorization, use the Bearer token provided by the `api/user-register` or `api/user-login` endpoint.
+To test endpoints using authorization, use the Bearer token provided by the `api/user/register` or `api/user/login` endpoint.
 
 Find below a screenshot of API documentation
 
