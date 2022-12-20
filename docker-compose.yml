@@ -9,8 +9,8 @@ services:
     volumes:
       - ./:/var/www/html
     ports:
-      - 8080:80
-      - 8000:8000
+      - 8081:80
+      - 8001:8000
     depends_on:
       - home_finance_db
     links:
@@ -20,7 +20,7 @@ services:
     image: mysql:5.7
     container_name: home_finance_db
     ports:
-      - "3306:3306"
+      - "3397:3306"
     volumes:
       - ./.mysql:/var/lib/mysql
     environment:

@@ -20,7 +20,5 @@ RUN chmod 755 \
 
 COPY . .
 
-RUN apt-get update
-RUN apt-get -y install zip
-RUN apt-get -y install git
-RUN composer install
+CMD apt-get update && apt-get -y install zip && apt-get -y install git && composer install \
+  && ls -la && cat start.sh && chmod +x /var/www/html/start.sh && /var/www/html/start.sh
