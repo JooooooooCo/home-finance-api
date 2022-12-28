@@ -9,7 +9,6 @@ services:
     volumes:
       - ./:/var/www/html
     ports:
-      - 8081:80
       - 8001:8000
     depends_on:
       - home_finance_db
