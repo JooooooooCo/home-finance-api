@@ -16,16 +16,16 @@ services:
       - home_finance_db
 
   home_finance_db:
-    image: mysql:5.7
+    image: postgres:latest
     container_name: home_finance_db
     ports:
-      - "3397:3306"
+      - "5432:5432"
     volumes:
-      - ./.mysql:/var/lib/mysql
+      - ./postgresql/data:/var/lib/postgresql/data
     environment:
-      - MYSQL_DATABASE=${DB_DATABASE}
-      - MYSQL_ROOT_USER=${DB_USERNAME}
-      - MYSQL_ROOT_PASSWORD=${DB_PASSWORD}
+      - POSTGRES_DB=${DB_DATABASE}
+      - POSTGRES_USER=${DB_USERNAME}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
       - TZ=America/Sao_Paulo
 networks:
   default:

@@ -24,9 +24,9 @@ This repo is the backend for Home Finance app and it serves Rest APIs.
 After download the project, rename the file `.env.example` to `.env` and add your database credentials in the variables:
 
 ```
-DB_CONNECTION=mysql
+DB_CONNECTION=pgsql
 DB_HOST=home_finance_db
-DB_PORT=3397
+DB_PORT=5432
 DB_DATABASE=home_finance
 DB_USERNAME=root
 DB_PASSWORD=123
