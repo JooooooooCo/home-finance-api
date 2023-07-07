@@ -93,7 +93,7 @@ class Controller extends BaseController
      */
     private function handleErrorMessage(string $error_message)
     {
-        $error_message_return = 'Internal error.';
+        $error_message_return = (!empty($error_message)) ? $error_message : 'Internal error.';
 
         $foreign_key_error = 'foreign key constraint fails';
         $foreign_key_pos = strpos($error_message, $foreign_key_error);
