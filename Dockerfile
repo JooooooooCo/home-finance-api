@@ -24,5 +24,7 @@ RUN chmod 755 \
 
 COPY . .
 
+EXPOSE 8080
+
 CMD apt-get update && apt-get -y install zip && apt-get -y install git && composer install \
   && ls -la && cat start.sh && chmod +x /var/www/html/start.sh && /var/www/html/start.sh
