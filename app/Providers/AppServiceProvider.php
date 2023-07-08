@@ -26,12 +26,13 @@ class AppServiceProvider extends ServiceProvider
     public function boot()
     {
         if (env('APP_DEBUG', false)) {
-            DB::listen(function($query) {
-                File::append(
-                    storage_path('/logs/query.log'),
-                    '[' . date('Y-m-d H:i:s') . ']' . PHP_EOL . $query->sql . ' [' . implode(', ', $query->bindings) . ']' . PHP_EOL . PHP_EOL
-                );
-            });
+            // TODO: ADJUST TO LOG IN DB AS SERVER IS STATELESS
+            // DB::listen(function($query) {
+            //     File::append(
+            //         storage_path('/logs/query.log'),
+            //         '[' . date('Y-m-d H:i:s') . ']' . PHP_EOL . $query->sql . ' [' . implode(', ', $query->bindings) . ']' . PHP_EOL . PHP_EOL
+            //     );
+            // });
         }
     }
 }
