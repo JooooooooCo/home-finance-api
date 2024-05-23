@@ -38,11 +38,11 @@ Now, you will need `docker` installed. Run this command to build and up the dock
 $ docker-compose up -d
 ```
 
-Great, now the API is available at `127.0.0.1:8001`
+Great, now the API is available at `127.0.0.1:8080`
 
 ## Documentation
 
-You can check documentation and test all the endpoints on swagger, available at `127.0.0.1:8001/api/documentation`
+You can check documentation and test all the endpoints on swagger, available at `127.0.0.1:8080/api/documentation`
 
 To test endpoints using authorization, use the Bearer token provided by the `api/user/register` or `api/user/login` endpoint.
 
