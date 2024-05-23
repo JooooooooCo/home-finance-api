@@ -32,6 +32,12 @@ DB_USERNAME=root
 DB_PASSWORD=123
 ```
 
+If the network home-finance-network doesn't already exist, you'll need to create it manually. Run the following command:
+
+```
+$ docker network create home-finance-network
+```
+
 Now, you will need `docker` installed. Run this command to build and up the docker container:
 
 ```
