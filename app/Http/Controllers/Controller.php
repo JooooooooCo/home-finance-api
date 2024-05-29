@@ -2,33 +2,16 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\CostCenter;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Routing\Controller as BaseController;
 use App\Exceptions\InvalidCostCenterException;
 
-/**
- * @OA\Info(
- *    title="Home Finance API",
- *    version="1.0.0",
- * ),
- * @OA\SecurityScheme(
- *    securityScheme="bearerAuth",
- *    type="http",
- *    scheme="bearer"
- * ),
- */
 class Controller extends BaseController
 {
     use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
 
-    /**
-     * Success response method.
-     *
-     * @return \Illuminate\Http\Response
-     */
     protected function sendResponse($result = [], $message = 'Success')
     {
     	$response = [
@@ -45,11 +28,6 @@ class Controller extends BaseController
         return response($response, 200);
     }
 
-    /**
-     * Error response method.
-     *
-     * @return \Illuminate\Http\Response
-     */
     protected function sendError($error = 'Internal error', $code = 404, $errorMessages = [])
     {
     	$response = [
@@ -64,12 +42,6 @@ class Controller extends BaseController
         return response($response, $code);
     }
 
-    /**
-     * Verify if user is associated to cost center
-     *
-     * @param  string  $cost_center_id
-     * @return bool
-     */
     public function verifyCostCenterBelongsUser(string $cost_center_id)
     {
         $costCenters = auth()->user()->costCenters;
@@ -85,12 +57,6 @@ class Controller extends BaseController
         );
     }
 
-    /**
-     * Return user friendly error messages
-     *
-     * @param  string $error_message
-     * @return string
-     */
     private function handleErrorMessage(string $error_message)
     {
         $error_message_return = (!empty($error_message)) ? $error_message : 'Internal error.';

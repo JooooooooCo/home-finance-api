@@ -11,8 +11,6 @@ It was built with:
 <img src="./storage/api-docs/laravel-logo.png" alt="laravel" height="30"/>
 &nbsp;
 <img src="./storage/api-docs/swagger-logo.png" alt="swagger" height="30"/>
-&nbsp;
-<img src="./storage/api-docs/openapi-logo.png" alt="openapi" height="30"/>
 </div>
 
 
@@ -58,14 +56,6 @@ Find below a screenshot of API documentation
 
 ### Update swagger documentation
 
-If you need update swagger documentation, you'll need run below commands.
-
-```
-$ docker exec home_finance_api php artisan l5-swagger:generate
-```
-
-```
-$ docker exec home_finance_api php artisan vendor:publish --provider "L5Swagger\L5SwaggerServiceProvider"
-```
+If you need update swagger documentation, you'll need edit the file `public/swagger-ui/swagger.json`
 
 ## I hope you enjoy it! 8)

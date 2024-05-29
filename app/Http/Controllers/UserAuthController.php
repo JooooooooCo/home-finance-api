@@ -9,55 +9,6 @@ use Illuminate\Support\Facades\Validator;
 
 class UserAuthController extends Controller
 {
-    /**
-      * @OA\Post(
-      * path="/api/user/register",
-      * tags={"User"},
-      * summary="User Register",
-      *      @OA\RequestBody(
-      *          required=true,
-      *          @OA\JsonContent(
-      *             type="object",
-      *             required={"name","email", "password", "password_confirmation"},
-      *             @OA\Property(property="name", type="string", maxLength=255),
-      *             @OA\Property(property="email", type="string", maxLength=255),
-      *             @OA\Property(property="password", type="string", minLength=8),
-      *             @OA\Property(property="password_confirmation", type="string", minLength=8),
-      *          ),
-      *      ),
-      *      @OA\Response(
-      *          response=200,
-      *          description="Register Successfully",
-      *          @OA\JsonContent(
-      *             type="object",
-      *             @OA\Property(
-      *                property="user",
-      *                type="object",
-      *                @OA\Property(property="name", type="string"),
-      *                @OA\Property(property="email", type="string"),
-      *             ),
-      *             @OA\Property(property="token", type="string"),
-      *          ),
-      *      ),
-      *      @OA\Response(
-      *          response=422,
-      *          description="Unprocessable Content",
-      *          @OA\JsonContent(
-      *               type="object",
-      *               @OA\Property(property="message", type="string", example="The given data was invalid."),
-      *               @OA\Property(
-      *                  property="errors",
-      *                  type="object",
-      *               ),
-      *          ),
-      *      ),
-      *      @OA\Response(response=400, description="Bad request"),
-      *      @OA\Response(response=404, description="Resource Not Found"),
-      * ),
-      *
-      * @param  \Illuminate\Http\Request  $request
-      * @return \Illuminate\Http\Response
-      */
     public function register(Request $request)
     {
         $data = $request->all();
@@ -89,49 +40,6 @@ class UserAuthController extends Controller
         ]);
     }
 
-    /**
-      * @OA\Post(
-      * path="/api/user/login",
-      * tags={"User"},
-      * summary="User Login",
-      *     @OA\RequestBody(
-      *         required=true,
-      *         @OA\JsonContent(
-      *               type="object",
-      *               required={"email", "password"},
-      *               @OA\Property(property="email", type="string"),
-      *               @OA\Property(property="password", type="string"),
-      *         ),
-      *     ),
-      *      @OA\Response(
-      *          response=200,
-      *          description="Login Successfully",
-      *          @OA\JsonContent(
-      *               type="object",
-      *               @OA\Property(
-      *                  property="user",
-      *                  type="object",
-      *                  @OA\Property(property="name", type="string"),
-      *                  @OA\Property(property="email", type="string"),
-      *               ),
-      *               @OA\Property(property="token", type="string"),
-      *          ),
-      *      ),
-      *      @OA\Response(
-      *          response=422,
-      *          description="Invalid login details. Please try again",
-      *          @OA\JsonContent(
-      *               type="object",
-      *               @OA\Property(property="message", type="string", example="Invalid login details. Please try again"),
-      *          ),
-      *      ),
-      *      @OA\Response(response=400, description="Bad request"),
-      *      @OA\Response(response=404, description="Resource Not Found"),
-      * ),
-      *
-      * @param  \Illuminate\Http\Request  $request
-      * @return \Illuminate\Http\Response
-      */
     public function login(Request $request)
     {
         $data = $request->all();
@@ -162,42 +70,6 @@ class UserAuthController extends Controller
         ]);
     }
 
-    /**
-      * @OA\Post(
-      * path="/api/user/current-cost-center",
-      * tags={"User"},
-      * summary="User set current Cost Center (tenant)",
-      * security={{"bearerAuth":{}}},
-      *      @OA\Parameter(
-      *          name="X-Tenant-ID",
-      *          in="header",
-      *          required=true,
-      *          description="The cost center ID",
-      *          @OA\Schema(type="integer"),
-      *      ),
-      *      @OA\Response(
-      *          response=200,
-      *          description="Successfully",
-      *          @OA\JsonContent(
-      *               type="object",
-      *               @OA\Property(property="message", type="string", example="Success"),
-      *          ),
-      *      ),
-      *      @OA\Response(
-      *          response=401,
-      *          description="Unauthorized",
-      *          @OA\JsonContent(
-      *               type="object",
-      *               @OA\Property(property="message", type="string", example="Unauthenticated."),
-      *          ),
-      *      ),
-      *      @OA\Response(response=400, description="Bad request"),
-      *      @OA\Response(response=404, description="Resource Not Found"),
-      * ),
-      *
-      * @param  \Illuminate\Http\Request  $request
-      * @return \Illuminate\Http\Response
-      */
     public function currentCostCenter(Request $request)
     {
         auth()->user()->update(['current_cost_center_id' => $request->header('X-Tenant-ID')]);
@@ -205,35 +77,6 @@ class UserAuthController extends Controller
         return $this->sendResponse();
     }
 
-    /**
-      * @OA\Post(
-      * path="/api/user/logout",
-      * tags={"User"},
-      * summary="User Logout",
-      * security={{"bearerAuth":{}}},
-      *      @OA\Response(
-      *          response=200,
-      *          description="Logout Successfully",
-      *          @OA\JsonContent(
-      *               type="object",
-      *               @OA\Property(property="message", type="string", example="You have been successfully logged out!"),
-      *          ),
-      *      ),
-      *      @OA\Response(
-      *          response=401,
-      *          description="Unauthorized",
-      *          @OA\JsonContent(
-      *               type="object",
-      *               @OA\Property(property="message", type="string", example="Unauthenticated."),
-      *          ),
-      *      ),
-      *      @OA\Response(response=400, description="Bad request"),
-      *      @OA\Response(response=404, description="Resource Not Found"),
-      * ),
-      *
-      * @param  \Illuminate\Http\Request  $request
-      * @return \Illuminate\Http\Response
-      */
     public function logout (Request $request) {
         $token = $request->user()->token();
         $token->revoke();
@@ -241,32 +84,6 @@ class UserAuthController extends Controller
         return $this->sendResponse([], 'You have been successfully logged out!');
     }
 
-    /**
-      * @OA\Get(
-      * path="/api/user/details",
-      * summary="Get User Details",
-      * tags={"User"},
-      * security={{"bearerAuth":{}}},
-      *      @OA\Response(
-      *          response=200,
-      *          description="Return the user details",
-      *          @OA\JsonContent(
-      *               type="object",
-      *               @OA\Property(property="id", type="integer"),
-      *               @OA\Property(property="name", type="string"),
-      *               @OA\Property(property="email", type="string"),
-      *               @OA\Property(property="email_verified_at", type="string"),
-      *               @OA\Property(property="created_at", type="string"),
-      *               @OA\Property(property="updated_at", type="string"),
-      *         ),
-      *      ),
-      *      @OA\Response(response=400, description="Bad request"),
-      *      @OA\Response(response=404, description="Resource Not Found"),
-      * )
-      *
-      * @param  \Illuminate\Http\Request  $request
-      * @return mixed
-      */
     public function details(Request $request)
     {
         return $this->sendResponse($request->user());
