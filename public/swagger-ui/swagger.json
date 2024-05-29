@@ -1,5 +1,5 @@
 {
-    "openapi": "3.0.0",
+    "swagger": "2.0",
     "info": {
         "title": "Home Finance API",
         "version": "1.0.0"
@@ -11,7 +11,7 @@
                     "Cost Centers"
                 ],
                 "summary": "Get list of Cost Centers",
-                "operationId": "bc28abbe1b493a2dbcacb259ff0f0a35",
+                "operationId": "fd920db6a24656aa187c7b3f9f4891a8",
                 "responses": {
                     "200": {
                         "description": "Return list of Cost Centers",
@@ -74,7 +74,7 @@
                     "Cost Centers"
                 ],
                 "summary": "Store a new Cost Center",
-                "operationId": "093d8a182b31a919787593dd7fd75b68",
+                "operationId": "671eb742fa79a852a9aa3a1b48244246",
                 "requestBody": {
                     "required": true,
                     "content": {
@@ -171,7 +171,7 @@
                     "Cost Centers"
                 ],
                 "summary": "Get a Cost Centers",
-                "operationId": "90eda1a81262940cdabfbec14e8825bc",
+                "operationId": "6f8b80c18f665e2daee2dd6ca617491b",
                 "parameters": [
                     {
                         "name": "id",
@@ -242,7 +242,7 @@
                     "Cost Centers"
                 ],
                 "summary": "Update a Cost Center",
-                "operationId": "005f1b0cf5ed6d8199e865a3487006c7",
+                "operationId": "830b73494e727ebfad952bf57a3b14be",
                 "parameters": [
                     {
                         "name": "id",
@@ -351,7 +351,7 @@
                     "Cost Centers"
                 ],
                 "summary": "Delete a Cost Center",
-                "operationId": "4b5bc85c133fb0b75f45df924ad00ca7",
+                "operationId": "44955d48312bbd912cc0d2aa1b6f2177",
                 "parameters": [
                     {
                         "name": "id",
@@ -448,7 +448,7 @@
                     "User"
                 ],
                 "summary": "User Register",
-                "operationId": "22a1fa952200ae39f77f6fdeb025af51",
+                "operationId": "a8f31b685360ef5abd0a8ddfd8be0dc5",
                 "requestBody": {
                     "required": true,
                     "content": {
@@ -544,7 +544,7 @@
                     "User"
                 ],
                 "summary": "User Login",
-                "operationId": "7ae49f64a6970e40b24242ca3110aa7c",
+                "operationId": "deccf6d637db99d784656b2969d346db",
                 "requestBody": {
                     "required": true,
                     "content": {
@@ -625,7 +625,7 @@
                     "User"
                 ],
                 "summary": "User set current Cost Center (tenant)",
-                "operationId": "570ee00b9b0a4328eb6d1f7a24e6fb42",
+                "operationId": "db6681e4b9bafc1db6173fcf3df57f77",
                 "parameters": [
                     {
                         "name": "X-Tenant-ID",
@@ -690,7 +690,7 @@
                     "User"
                 ],
                 "summary": "User Logout",
-                "operationId": "3845c5ee3fb13275d5c4ecb533bd412a",
+                "operationId": "9777707c4228d5113a8f542cec8c8b61",
                 "responses": {
                     "200": {
                         "description": "Logout Successfully",
@@ -744,7 +744,7 @@
                     "User"
                 ],
                 "summary": "Get User Details",
-                "operationId": "c9552a2789daceeb477dfddbdf09ce06",
+                "operationId": "e8930e38820e39009cbe89aa186d8163",
                 "responses": {
                     "200": {
                         "description": "Return the user details",
