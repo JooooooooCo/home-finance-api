@@ -52,9 +52,7 @@ class Controller extends BaseController
             }
         }
 
-        throw new InvalidCostCenterException(
-            "Object not found"
-        );
+        throw new InvalidCostCenterException("Object not found");
     }
 
     private function handleErrorMessage(string $error_message)
