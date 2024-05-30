@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Exceptions\InvalidCostCenterException;
 use App\Models\CostCenter;
 use App\Models\CostCenterUser;
 use App\Http\Controllers\Controller;
@@ -84,6 +85,12 @@ class CostCenterController extends Controller
     public function destroy(CostCenter $cost_center)
     {
         $this->verifyCostCenterBelongsUser($cost_center->id);
+
+        if (auth()->user()->current_cost_center_id == $cost_center->id) {
+            throw new InvalidCostCenterException(
+                "Can't delete current cost center. Please log in another cost center and try again."
+            );
+        }
 
         try {
             \DB::beginTransaction();
