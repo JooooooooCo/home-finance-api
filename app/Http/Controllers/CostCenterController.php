@@ -15,7 +15,7 @@ class CostCenterController extends Controller
     public function index()
     {
         $costCenters = CostCenterResource::collection(
-            auth()->user()->costCenters
+            auth()->user()->costCenters()->orderBy('name')->get()
         );
 
         return $this->sendResponse($costCenters, 'Cost centers collection');
