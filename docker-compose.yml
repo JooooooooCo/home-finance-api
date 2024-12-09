@@ -9,13 +9,21 @@ services:
     volumes:
       - ./:/var/www/html
     ports:
-      - 8080:8080
+      - "8080:8080"
     depends_on:
       - home_finance_db
     links:
       - home_finance_db
     networks:
       - home-finance-network
+    environment:
+      - TZ=America/Sao_Paulo
+      - DB_CONNECTION=pgsql
+      - DB_HOST=home_finance_db
+      - DB_PORT=5432
+      - DB_DATABASE=${DB_DATABASE}
+      - DB_USERNAME=${DB_USERNAME}
+      - DB_PASSWORD=${DB_PASSWORD}
 
   home_finance_db:
     image: postgres:latest
