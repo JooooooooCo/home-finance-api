@@ -3,9 +3,8 @@ FROM php:8.2-apache
 WORKDIR /var/www/html/
 
 RUN apt-get update \
-    && apt-get install -y libpq-dev zip git unzip \
-    && docker-php-ext-configure pgsql --with-pgsql=/usr/local/pgsql \
-    && docker-php-ext-install pdo pdo_pgsql pgsql
+    && apt-get install -y zip git unzip \
+    && docker-php-ext-install pdo pdo_mysql
 
 RUN curl -sS https://getcomposer.org/installer | php -- \
         --filename=composer \

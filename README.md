@@ -22,11 +22,11 @@ This repo is the backend for Home Finance app and it serves Rest APIs.
 After download the project, rename the file `.env.example` to `.env` and add your database credentials in the variables:
 
 ```
-DB_CONNECTION=pgsql
+DB_CONNECTION=mysql
 DB_HOST=home_finance_db
-DB_PORT=5432
+DB_PORT=3306
 DB_DATABASE=home_finance
-DB_USERNAME=root
+DB_USERNAME=user
 DB_PASSWORD=123
 ```
 
@@ -39,7 +39,7 @@ $ docker network create home-finance-network
 Now, you will need `docker` installed. Run this command to build and up the docker container:
 
 ```
-$ docker-compose up -d
+$ docker compose up -d
 ```
 
 Great, now the API is available at `127.0.0.1:8080`
