@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateTypeCashMovementTable extends Migration
+class CreateTransactionTypesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,7 +13,7 @@ class CreateTypeCashMovementTable extends Migration
      */
     public function up()
     {
-        Schema::create('type_cash_movement', function (Blueprint $table) {
+        Schema::create('transaction_types', function (Blueprint $table) {
             $table->increments('id');
             $table->string('name');
             $table->unsignedInteger('cost_center_id');
@@ -31,6 +31,6 @@ class CreateTypeCashMovementTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('type_cash_movement');
+        Schema::dropIfExists('transaction_types');
     }
 }
