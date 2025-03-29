@@ -2,9 +2,11 @@
 
 namespace App\Providers;
 
+use App\Repositories\CostCenterRepository;
+use App\Repositories\Interfacies\CostCenterRepositoryInterface;
 use Illuminate\Support\ServiceProvider;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\File;
+// use Illuminate\Support\Facades\DB;
+// use Illuminate\Support\Facades\File;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -15,7 +17,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        //
+        $this->app->bind(CostCenterRepositoryInterface::class, CostCenterRepository::class);
     }
 
     /**

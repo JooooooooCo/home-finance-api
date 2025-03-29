@@ -2,113 +2,51 @@
 
 namespace App\Http\Controllers;
 
-use App\Exceptions\InvalidCostCenterException;
-use App\Models\CostCenter;
-use App\Models\CostCenterUser;
-use App\Http\Controllers\Controller;
-use App\Http\Resources\CostCenterResource;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Validator;
+use App\Services\CostCenterService;
+use Illuminate\Support\Facades\Auth;
 
 class CostCenterController extends Controller
 {
-    public function index()
-    {
-        $costCenters = CostCenterResource::collection(
-            auth()->user()->costCenters()->orderBy('name')->get()
-        );
+    protected $service;
 
+    public function __construct(CostCenterService $service)
+    {
+        $this->service = $service;
+    }
+
+    public function list()
+    {
+        $costCenters = $this->service->list(Auth::user());
         return $this->sendResponse($costCenters, 'Cost centers collection');
     }
 
-    public function store(Request $request)
+    public function create(Request $request)
     {
-        $user_id = auth()->user()->id;
-        $data = $request->all();
-
-        $validator = Validator::make($data, [
-            'name' => 'required|max:200'
-        ]);
-
-        if($validator->fails()){
-            return $this->sendError("Validation Error", 422, $validator->errors());
-        }
-
-        try {
-            \DB::beginTransaction();
-
-            $cost_center = CostCenter::create($data);
-            $cost_center->users()->attach($user_id);
-
-            $return_data = new CostCenterResource($cost_center);
-
-            \DB::commit();
-
-            return $this->sendResponse($return_data, 'Success, cost center created');
-        } catch (\PDOException $e) {
-            \DB::rollBack();
-
-            return $this->sendError($e->getMessage(), 500);
-        }
+        $data = $request->validate(['name' => 'required|max:200']);
+        $costCenter = $this->service->create(Auth::user(), $data);
+        return $this->sendResponse($costCenter, 'Success, cost center created');
     }
 
-    public function show(CostCenter $cost_center)
+    public function get(Request $request)
     {
-        $this->verifyCostCenterBelongsUser($cost_center->id);
-
-        $return_data = new CostCenterResource($cost_center);
-
-        return $this->sendResponse($return_data, 'Cost center details');
+        $costCenterId = $request->route('cost_center_id');
+        $costCenter = $this->service->get(Auth::user(), $costCenterId);
+        return $this->sendResponse($costCenter, 'Cost center details');
     }
 
-    public function update(Request $request, CostCenter $cost_center)
+    public function update(Request $request)
     {
-        $this->verifyCostCenterBelongsUser($cost_center->id);
-
-        try {
-            \DB::beginTransaction();
-
-            $cost_center->update($request->all());
-
-            $return_data = new CostCenterResource($cost_center);
-
-            \DB::commit();
-
-            return $this->sendResponse($return_data, 'Success, cost center updated');
-        } catch (\PDOException $e) {
-            \DB::rollBack();
-
-            return $this->sendError($e->getMessage(), 500);
-        }
+        $costCenterId = $request->route('cost_center_id');
+        $data = $request->validate(['name' => 'required|max:200']);
+        $updatedCostCenter = $this->service->update(Auth::user(), $costCenterId, $data);
+        return $this->sendResponse($updatedCostCenter, 'Success, cost center updated');
     }
 
-    public function destroy(CostCenter $cost_center)
+    public function delete(Request $request)
     {
-        $this->verifyCostCenterBelongsUser($cost_center->id);
-
-        if (auth()->user()->current_cost_center_id == $cost_center->id) {
-            throw new InvalidCostCenterException(
-                "Can't delete current cost center. Please log in another cost center and try again."
-            );
-        }
-
-        try {
-            \DB::beginTransaction();
-
-            $cost_center_user = CostCenterUser::where('user_id', auth()->user()->id)
-                ->where('cost_center_id', $cost_center->id);
-
-            $cost_center_user->delete();
-
-            $cost_center->delete();
-
-            \DB::commit();
-
-            return $this->sendResponse([], 'Success, cost center deleted');
-        } catch (\PDOException $e) {
-            \DB::rollBack();
-
-            return $this->sendError($e->getMessage(), 500);
-        }
+        $costCenterId = $request->route('cost_center_id');
+        $this->service->delete(Auth::user(), $costCenterId);
+        return $this->sendResponse([], 'Success, cost center deleted');
     }
 }
