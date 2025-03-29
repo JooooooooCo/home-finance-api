@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 
 class UserAuthController extends Controller
@@ -57,11 +58,11 @@ class UserAuthController extends Controller
             return $this->sendError("Invalid login details. Please try again", 422);
         }
 
-        $token = auth()->user()->createToken('API Token')->accessToken;
+        $token = Auth::user()->createToken('API Token')->accessToken;
 
         $userResponse = [
-            'name' => auth()->user()->name,
-            'email' => auth()->user()->email
+            'name' => Auth::user()->name,
+            'email' => Auth::user()->email
         ];
 
         return $this->sendResponse([
@@ -72,7 +73,7 @@ class UserAuthController extends Controller
 
     public function currentCostCenter(Request $request)
     {
-        auth()->user()->update(['current_cost_center_id' => $request->header('X-Tenant-ID')]);
+        Auth::user()->update(['current_cost_center_id' => $request->header('X-Tenant-ID')]);
 
         return $this->sendResponse();
     }

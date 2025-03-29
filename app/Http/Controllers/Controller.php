@@ -2,11 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Exceptions\InvalidCostCenterException;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Routing\Controller as BaseController;
-use App\Exceptions\InvalidCostCenterException;
+use Illuminate\Support\Facades\Auth;
 
 class Controller extends BaseController
 {
@@ -44,7 +45,7 @@ class Controller extends BaseController
 
     public function verifyCostCenterBelongsUser(string $cost_center_id)
     {
-        $costCenters = auth()->user()->costCenters;
+        $costCenters = Auth::user()->costCenters;
 
         foreach ($costCenters as $value) {
             if ($cost_center_id == $value->id) {
