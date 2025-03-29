@@ -2,12 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Exceptions\InvalidCostCenterException;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Routing\Controller as BaseController;
-use Illuminate\Support\Facades\Auth;
 
 class Controller extends BaseController
 {
@@ -41,19 +39,6 @@ class Controller extends BaseController
         }
 
         return response($response, $code);
-    }
-
-    public function verifyCostCenterBelongsUser(string $cost_center_id)
-    {
-        $costCenters = Auth::user()->costCenters;
-
-        foreach ($costCenters as $value) {
-            if ($cost_center_id == $value->id) {
-                return;
-            }
-        }
-
-        throw new InvalidCostCenterException("Object not found");
     }
 
     private function handleErrorMessage(string $error_message)
