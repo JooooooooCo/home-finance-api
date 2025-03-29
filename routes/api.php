@@ -8,9 +8,6 @@ Route::post('/user/login', 'App\Http\Controllers\UserAuthController@login');
 Route::middleware('auth:api')->group(function () {
     Route::post('/user/logout', 'App\Http\Controllers\UserAuthController@logout');
     Route::get('/user/details', 'App\Http\Controllers\UserAuthController@details');
-    Route::get('/settings/cost-center', 'App\Http\Controllers\CostCenterController@list');
-    Route::post('/settings/cost-center', 'App\Http\Controllers\CostCenterController@create');
-    Route::get('/settings/cost-center/{id}', 'App\Http\Controllers\CostCenterController@get');
-    Route::put('/settings/cost-center/{id}', 'App\Http\Controllers\CostCenterController@update');
-    Route::delete('/settings/cost-center/{id}', 'App\Http\Controllers\CostCenterController@delete');
 });
+
+require __DIR__ . '/api/settings.php';
