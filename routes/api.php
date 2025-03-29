@@ -10,7 +10,7 @@ Route::middleware('auth:api')->group(function () {
     Route::get('/user/details', 'App\Http\Controllers\UserAuthController@details');
     Route::get('/settings/cost-center', 'App\Http\Controllers\CostCenterController@list');
     Route::post('/settings/cost-center', 'App\Http\Controllers\CostCenterController@create');
-    Route::get('/settings/cost-center/{cost_center_id}', 'App\Http\Controllers\CostCenterController@get');
-    Route::put('/settings/cost-center/{cost_center_id}', 'App\Http\Controllers\CostCenterController@update');
-    Route::delete('/settings/cost-center/{cost_center_id}', 'App\Http\Controllers\CostCenterController@delete');
+    Route::get('/settings/cost-center/{id}', 'App\Http\Controllers\CostCenterController@get');
+    Route::put('/settings/cost-center/{id}', 'App\Http\Controllers\CostCenterController@update');
+    Route::delete('/settings/cost-center/{id}', 'App\Http\Controllers\CostCenterController@delete');
 });

@@ -37,18 +37,18 @@ class CostCenterService
         }
     }
 
-    public function get(User $authUser, int $costCenterId): CostCenter
+    public function get(User $authUser, int $id): CostCenter
     {
-        return $this->repository->findById($authUser->id, $costCenterId);
+        return $this->repository->findById($authUser->id, $id);
     }
 
-    public function update(User $authUser, int $costCenterId, array $data): CostCenter
+    public function update(User $authUser, int $id, array $data): CostCenter
     {
-        return $this->repository->update($authUser->id, $costCenterId, $data);
+        return $this->repository->update($authUser->id, $id, $data);
     }
 
-    public function delete(User $authUser, int $costCenterId): void
+    public function delete(User $authUser, int $id): void
     {
-        $this->repository->delete($authUser->id, $costCenterId);
+        $this->repository->delete($authUser->id, $id);
     }
 }

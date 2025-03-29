@@ -30,23 +30,23 @@ class CostCenterController extends Controller
 
     public function get(Request $request)
     {
-        $costCenterId = $request->route('cost_center_id');
-        $costCenter = $this->service->get(Auth::user(), $costCenterId);
+        $id = $request->route('id');
+        $costCenter = $this->service->get(Auth::user(), $id);
         return $this->sendResponse($costCenter, 'Cost center details');
     }
 
     public function update(Request $request)
     {
-        $costCenterId = $request->route('cost_center_id');
+        $id = $request->route('id');
         $data = $request->validate(['name' => 'required|max:200']);
-        $updatedCostCenter = $this->service->update(Auth::user(), $costCenterId, $data);
-        return $this->sendResponse($updatedCostCenter, 'Success, cost center updated');
+        $costCenter = $this->service->update(Auth::user(), $id, $data);
+        return $this->sendResponse($costCenter, 'Success, cost center updated');
     }
 
     public function delete(Request $request)
     {
-        $costCenterId = $request->route('cost_center_id');
-        $this->service->delete(Auth::user(), $costCenterId);
+        $id = $request->route('id');
+        $this->service->delete(Auth::user(), $id);
         return $this->sendResponse([], 'Success, cost center deleted');
     }
 }
