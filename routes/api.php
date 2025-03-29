@@ -13,8 +13,4 @@ Route::middleware('auth:api')->group(function () {
     Route::get('/settings/cost-center/{cost_center_id}', 'App\Http\Controllers\CostCenterController@get');
     Route::put('/settings/cost-center/{cost_center_id}', 'App\Http\Controllers\CostCenterController@update');
     Route::delete('/settings/cost-center/{cost_center_id}', 'App\Http\Controllers\CostCenterController@delete');
-
-    Route::middleware('verify.tenant.header')->group(function () {
-        Route::post('/user/current-cost-center', 'App\Http\Controllers\UserAuthController@currentCostCenter');
-    });
 });
