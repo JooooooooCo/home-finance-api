@@ -18,7 +18,7 @@ class PaymentTypeController extends Controller
     public function list()
     {
         $paymentTypes = $this->service->list();
-        return $this->sendResponse($paymentTypes, 'entitiess collection');
+        return $this->sendResponse($paymentTypes, 'entities collection');
     }
 
     public function create(Request $request)
