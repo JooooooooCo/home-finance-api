@@ -23,7 +23,7 @@ class TransactionController extends Controller
 
     public function create(Request $request)
     {
-        $data = $request->validate(['name' => 'required|max:200']);
+        $data = $request->all();
         $transaction = $this->service->create($data);
         return $this->sendResponse($transaction, 'Success, entity created');
     }
@@ -38,7 +38,7 @@ class TransactionController extends Controller
     public function update(Request $request)
     {
         $id = $request->route('id');
-        $data = $request->validate(['name' => 'required|max:200']);
+        $data = $request->all();
         $transaction = $this->service->update($id, $data);
         return $this->sendResponse($transaction, 'Success, entity updated');
     }
