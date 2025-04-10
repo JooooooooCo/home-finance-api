@@ -3,6 +3,7 @@ version: '3.9'
 services:
   home_finance_api:
     container_name: home_finance_api
+    mem_limit: 512m
     build:
       context: ./
       dockerfile: ./Dockerfile
@@ -28,6 +29,7 @@ services:
   home_finance_db:
     image: mysql:latest
     container_name: home_finance_db
+    mem_limit: 384m
     ports:
       - "3306:3306"
     volumes:
