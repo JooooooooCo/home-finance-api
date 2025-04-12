@@ -9,11 +9,13 @@ use App\Repositories\CostCenterRepository;
 use App\Repositories\TransactionTypeRepository;
 use App\Repositories\CashFlow\TransactionRepository;
 use App\Repositories\Settings\PaymentTypeRepository;
+use App\Repositories\Settings\PrimaryCategoryRepository;
 use App\Repositories\Settings\PaymentStatusTypeRepository;
 use App\Repositories\Interfacies\CostCenterRepositoryInterface;
 use App\Repositories\Interfacies\TransactionTypeRepositoryInterface;
 use App\Repositories\CashFlow\Interfacies\TransactionRepositoryInterface;
 use App\Repositories\Settings\Interfacies\PaymentTypeRepositoryInterface;
+use App\Repositories\Settings\Interfacies\PrimaryCategoryRepositoryInterface;
 use App\Repositories\Settings\Interfacies\PaymentStatusTypeRepositoryInterface;
 
 class AppServiceProvider extends ServiceProvider
@@ -29,6 +31,7 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(TransactionTypeRepositoryInterface::class, TransactionTypeRepository::class);
         $this->app->bind(PaymentTypeRepositoryInterface::class, PaymentTypeRepository::class);
         $this->app->bind(PaymentStatusTypeRepositoryInterface::class, PaymentStatusTypeRepository::class);
+        $this->app->bind(PrimaryCategoryRepositoryInterface::class, PrimaryCategoryRepository::class);
         $this->app->bind(TransactionRepositoryInterface::class, TransactionRepository::class);
     }
 
