@@ -27,5 +27,11 @@ Route::middleware('auth:api')->group(function () {
         Route::get('/settings/secondary-category/{id}', 'App\Http\Controllers\Settings\SecondaryCategoryController@get');
         Route::put('/settings/secondary-category/{id}', 'App\Http\Controllers\Settings\SecondaryCategoryController@update');
         Route::delete('/settings/secondary-category/{id}', 'App\Http\Controllers\Settings\SecondaryCategoryController@delete');
+
+        Route::get('/settings/specific-category', 'App\Http\Controllers\Settings\SpecificCategoryController@list');
+        Route::post('/settings/specific-category', 'App\Http\Controllers\Settings\SpecificCategoryController@create');
+        Route::get('/settings/specific-category/{id}', 'App\Http\Controllers\Settings\SpecificCategoryController@get');
+        Route::put('/settings/specific-category/{id}', 'App\Http\Controllers\Settings\SpecificCategoryController@update');
+        Route::delete('/settings/specific-category/{id}', 'App\Http\Controllers\Settings\SpecificCategoryController@delete');
     });
 });
