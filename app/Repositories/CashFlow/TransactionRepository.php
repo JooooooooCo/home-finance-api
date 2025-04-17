@@ -17,6 +17,14 @@ class TransactionRepository implements TransactionRepositoryInterface
     public function getAll(): array
     {
         return $this->model
+            ->with([
+                'transactionType:id,name',
+                'paymentType:id,name',
+                'paymentStatus:id,name',
+                'primaryCategory:id,name',
+                'secondaryCategory:id,name',
+                'specificCategory:id,name',
+            ])
             ->orderBy('id')
             ->get()
             ->toArray();
