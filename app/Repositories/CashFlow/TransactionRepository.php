@@ -14,17 +14,22 @@ class TransactionRepository implements TransactionRepositoryInterface
         $this->model = $model;
     }
 
-    public function getAll(): array
+    public function getAll(array $filters): array
     {
-        return $this->model
-            ->with([
-                'transactionType:id,name',
-                'paymentType:id,name',
-                'paymentStatus:id,name',
-                'primaryCategory:id,name',
-                'secondaryCategory:id,name',
-                'specificCategory:id,name',
-            ])
+        $query = $this->model->with([
+            'transactionType:id,name',
+            'paymentType:id,name',
+            'paymentStatus:id,name',
+            'primaryCategory:id,name',
+            'secondaryCategory:id,name',
+            'specificCategory:id,name',
+        ]);
+
+        if (!empty($filters['transactionTypeIds'])) {
+            $query->whereIn('transaction_type_id', $filters['transactionTypeIds']);
+        }
+
+        return $query
             ->orderBy('id')
             ->get()
             ->toArray();

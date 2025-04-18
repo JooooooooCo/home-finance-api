@@ -15,9 +15,10 @@ class TransactionController extends Controller
         $this->service = $service;
     }
 
-    public function list()
+    public function list(Request $request)
     {
-        $transactions = $this->service->list();
+        $filters = $request->query();
+        $transactions = $this->service->list($filters);
         return $this->sendResponse($transactions, 'entities collection');
     }
 

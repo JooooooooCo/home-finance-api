@@ -14,9 +14,9 @@ class TransactionService
         $this->repository = $repository;
     }
 
-    public function list(): array
+    public function list(array $filters): array
     {
-        return $this->repository->getAll();
+        return $this->repository->getAll($filters);
     }
 
     public function create(array $data): Transaction

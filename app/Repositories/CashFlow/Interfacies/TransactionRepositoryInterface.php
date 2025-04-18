@@ -6,7 +6,7 @@ use App\Models\CashFlow\Transaction;
 
 interface TransactionRepositoryInterface
 {
-  public function getAll(): array;
+  public function getAll(array $filters): array;
   public function create(array $data): Transaction;
   public function findById(int $id):? Transaction;
   public function update(int $id, array $data): Transaction;
