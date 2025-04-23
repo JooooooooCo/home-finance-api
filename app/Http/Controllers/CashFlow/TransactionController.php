@@ -28,6 +28,13 @@ class TransactionController extends Controller
         $transaction = $this->service->create($data);
         return $this->sendResponse($transaction, 'Success, entity created');
     }
+    
+    public function createBatch(Request $request)
+    {
+      $data = $request->all();
+      $transactions = $this->service->createBatch($data);    
+      return $this->sendResponse($transactions, 'Success, multiple entities created');
+    }
 
     public function get(Request $request)
     {
