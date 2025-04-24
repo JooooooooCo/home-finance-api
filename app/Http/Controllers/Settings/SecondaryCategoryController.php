@@ -18,7 +18,7 @@ class SecondaryCategoryController extends Controller
     public function list(Request $request)
     {
         $transactionTypeId = $request->get('transaction-type-id');
-        $itens = $this->service->list((int) $transactionTypeId);
+        $itens = $this->service->list($transactionTypeId);
         return $this->sendResponse($itens, 'entities collection');
     }
 

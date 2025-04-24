@@ -14,10 +14,12 @@ class SecondaryCategoryRepository implements SecondaryCategoryRepositoryInterfac
         $this->model = $model;
     }
 
-    public function getAll(int $transactionTypeId): array
+    public function getAll(?int $transactionTypeId): array
     {
         return $this->model
-            ->where('transaction_type_id', $transactionTypeId)
+            ->when($transactionTypeId !== null, function ($query) use ($transactionTypeId) {
+                $query->where('transaction_type_id', $transactionTypeId);
+            })
             ->orderBy('name')
             ->get()
             ->toArray();

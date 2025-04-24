@@ -2,7 +2,6 @@
 
 namespace App\Services\Settings;
 
-use Exception;
 use App\Models\Settings\SecondaryCategory;
 use App\Repositories\Settings\Interfacies\SecondaryCategoryRepositoryInterface;
 
@@ -15,12 +14,8 @@ class SecondaryCategoryService
         $this->repository = $repository;
     }
 
-    public function list(int $transactionTypeId): array
+    public function list(?int $transactionTypeId): array
     {
-        if (empty($transactionTypeId)) {
-            throw new Exception('Informe o transactionTypeId');
-        }
-
         return $this->repository->getAll($transactionTypeId);
     }
 

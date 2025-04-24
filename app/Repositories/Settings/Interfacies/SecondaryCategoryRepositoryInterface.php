@@ -6,7 +6,7 @@ use App\Models\Settings\SecondaryCategory;
 
 interface SecondaryCategoryRepositoryInterface
 {
-  public function getAll(int $transactionTypeId): array;
+  public function getAll(?int $transactionTypeId): array;
   public function create(array $data): SecondaryCategory;
   public function findById(int $id):? SecondaryCategory;
   public function update(int $id, array $data): SecondaryCategory;
