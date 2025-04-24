@@ -53,13 +53,13 @@ class TransactionRepository implements TransactionRepositoryInterface
             $query->whereRaw('LOWER(description) LIKE ?', ['%' . strtolower($filters['description']) . '%']);
         }
 
-        $reconciled = $filters['reconciled'] ?? false;
-        $notReconciled = $filters['notReconciled'] ?? false;
-      
+        $reconciled = $filters['reconciled'] ? true : false;
+        $notReconciled = $filters['notReconciled'] ? true : false;
+
         if ($reconciled && !$notReconciled) {
-          $query->where('is_reconciled', 1);
+            $query->where('is_reconciled', 1);
         } elseif (!$reconciled && $notReconciled) {
-          $query->where('is_reconciled', 0);
+            $query->where('is_reconciled', 0);
         } elseif (!$reconciled && !$notReconciled) {
           $query->whereRaw('1 = 0');
         }
