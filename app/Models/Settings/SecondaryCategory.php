@@ -3,15 +3,17 @@
 namespace App\Models\Settings;
 
 use App\Models\CostCenter;
+use App\Traits\TenantScoped;
 use App\Models\TransactionType;
 use App\Models\CashFlow\Transaction;
+use App\Traits\TenantAttributeTrait;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\Settings\SpecificCategory;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class SecondaryCategory extends Model
 {
-  use SoftDeletes;
+  use SoftDeletes, TenantAttributeTrait, TenantScoped;
 
   protected $table = 'secondary_categories';
 
