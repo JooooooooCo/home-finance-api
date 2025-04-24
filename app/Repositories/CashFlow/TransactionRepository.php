@@ -29,6 +29,41 @@ class TransactionRepository implements TransactionRepositoryInterface
             $query->whereIn('transaction_type_id', $filters['transactionTypeIds']);
         }
 
+        if (!empty($filters['paymentTypeIds'])) {
+            $query->whereIn('payment_type_id', $filters['paymentTypeIds']);
+        }
+
+        if (!empty($filters['paymentStatusIds'])) {
+            $query->whereIn('payment_status_id', $filters['paymentStatusIds']);
+        }
+
+        if (!empty($filters['primaryCategoryId'])) {
+            $query->where('primary_category_id', $filters['primaryCategoryId']);
+        }
+
+        if (!empty($filters['secondaryCategoryId'])) {
+            $query->where('secondary_category_id', $filters['secondaryCategoryId']);
+        }
+
+        if (!empty($filters['specificCategoryId'])) {
+            $query->where('specific_category_id', $filters['specificCategoryId']);
+        }
+
+        if (!empty($filters['description'])) {
+            $query->whereRaw('LOWER(description) LIKE ?', ['%' . strtolower($filters['description']) . '%']);
+        }
+
+        $reconciled = $filters['reconciled'] ?? false;
+        $notReconciled = $filters['notReconciled'] ?? false;
+      
+        if ($reconciled && !$notReconciled) {
+          $query->where('is_reconciled', 1);
+        } elseif (!$reconciled && $notReconciled) {
+          $query->where('is_reconciled', 0);
+        } elseif (!$reconciled && !$notReconciled) {
+          $query->whereRaw('1 = 0');
+        }
+
         return $query
             ->orderBy('id')
             ->get()
