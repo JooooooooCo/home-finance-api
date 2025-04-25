@@ -20,10 +20,13 @@ class TransactionService
     {
         $transactions = $this->repository->getAll($filters);
 
+        if (empty($transactions)) {
+            throw new Exception("Não há registros para o filtro aplicado", 404);
+        }
+
         if (count($transactions) > self::MAX_ALLOWED_LIST_RESPONSE) {
-            throw new Exception(
-                "O filtro aplicado retornou mais que o máximo permitido de " . self::MAX_ALLOWED_LIST_RESPONSE . " registros."
-            );
+            $msg = "O filtro aplicado retornou mais que o máximo permitido de " . self::MAX_ALLOWED_LIST_RESPONSE . " registros.";
+            throw new Exception($msg, 422);
         }
 
         return $transactions;
