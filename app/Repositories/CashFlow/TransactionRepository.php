@@ -61,6 +61,18 @@ class TransactionRepository implements TransactionRepositoryInterface
             $query->where('amount', '<=', $filters['amountMax']);
         }
 
+        if (!empty($filters['dueDateRange'])) {
+            $query->whereBetween('due_date', [$filters['dueDateRange'][0], $filters['dueDateRange'][1]]);
+        }
+
+        if (!empty($filters['paymentDateRange'])) {
+            $query->whereBetween('payment_date', [$filters['paymentDateRange'][0], $filters['paymentDateRange'][1]]);
+        }
+
+        if (!empty($filters['purchaseDateRange'])) {
+            $query->whereBetween('purchase_date', [$filters['purchaseDateRange'][0], $filters['purchaseDateRange'][1]]);
+        }
+
         $reconciled = $filters['reconciled'] ? true : false;
         $notReconciled = $filters['notReconciled'] ? true : false;
 
