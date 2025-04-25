@@ -53,6 +53,14 @@ class TransactionRepository implements TransactionRepositoryInterface
             $query->whereRaw('LOWER(description) LIKE ?', ['%' . strtolower($filters['description']) . '%']);
         }
 
+        if ($filters['amountMin'] != "") {
+            $query->where('amount', '>=', $filters['amountMin']);
+        }
+
+        if ($filters['amountMax'] != "") {
+            $query->where('amount', '<=', $filters['amountMax']);
+        }
+
         $reconciled = $filters['reconciled'] ? true : false;
         $notReconciled = $filters['notReconciled'] ? true : false;
 
