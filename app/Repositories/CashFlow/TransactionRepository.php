@@ -85,7 +85,10 @@ class TransactionRepository implements TransactionRepositoryInterface
         }
 
         return $query
-            ->orderBy('id')
+            ->orderBy('due_date', 'asc')
+            ->orderBy('transaction_type_id', 'desc')
+            ->orderBy('payment_type_id', 'asc')
+            ->orderBy('purchase_date', 'asc')
             ->get()
             ->toArray();
     }
