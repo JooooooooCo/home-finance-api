@@ -25,6 +25,29 @@ class TransactionRepository implements TransactionRepositoryInterface
             'specificCategory:id,name',
         ]);
 
+        $query = $this->applyFilters($query, $filters);
+
+        $query->orderBy('due_date', 'asc')
+            ->orderBy('transaction_type_id', 'desc')
+            ->orderBy('payment_type_id', 'asc')
+            ->orderBy('purchase_date', 'asc');
+
+        return $query->get()->toArray();
+    }
+
+    public function getHistoryExecutedAmount(String $endDate): array
+    {
+        return $this->model
+            ->selectRaw('transaction_type_id, payment_status_id, SUM(amount) as amount')
+            ->where('due_date', '<=', $endDate)
+            ->groupBy('transaction_type_id')
+            ->groupBy('payment_status_id')
+            ->get()
+            ->toArray();
+    }
+
+    private function applyFilters($query, array $filters)
+    {
         if (!empty($filters['transactionTypeIds'])) {
             $query->whereIn('transaction_type_id', $filters['transactionTypeIds']);
         }
@@ -84,13 +107,7 @@ class TransactionRepository implements TransactionRepositoryInterface
           $query->whereRaw('1 = 0');
         }
 
-        return $query
-            ->orderBy('due_date', 'asc')
-            ->orderBy('transaction_type_id', 'desc')
-            ->orderBy('payment_type_id', 'asc')
-            ->orderBy('purchase_date', 'asc')
-            ->get()
-            ->toArray();
+        return $query;
     }
 
     public function create(array $data): Transaction

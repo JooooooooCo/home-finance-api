@@ -10,6 +10,10 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class PaymentStatusType extends Model
 {
+    public const PAID = 1;
+    public const PENDING = 2;
+    public const TRANSFERED = 3;
+
     use SoftDeletes, TenantAttributeTrait, TenantScoped;
 
     protected $table = 'payment_status_types';
