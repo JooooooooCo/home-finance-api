@@ -53,11 +53,11 @@ class TransactionRepository implements TransactionRepositoryInterface
             $query->whereRaw('LOWER(description) LIKE ?', ['%' . strtolower($filters['description']) . '%']);
         }
 
-        if ($filters['amountMin'] != "") {
+        if (isset($filters['amountMin']) && $filters['amountMin'] != "") {
             $query->where('amount', '>=', $filters['amountMin']);
         }
 
-        if ($filters['amountMax'] != "") {
+        if (isset($filters['amountMax']) && $filters['amountMax'] != "") {
             $query->where('amount', '<=', $filters['amountMax']);
         }
 
