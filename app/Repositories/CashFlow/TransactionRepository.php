@@ -39,7 +39,7 @@ class TransactionRepository implements TransactionRepositoryInterface
     {
         return $this->model
             ->selectRaw('transaction_type_id, payment_status_id, SUM(amount) as amount')
-            ->where('due_date', '<=', $endDate)
+            ->where('due_date', '<', $endDate)
             ->groupBy('transaction_type_id')
             ->groupBy('payment_status_id')
             ->get()
