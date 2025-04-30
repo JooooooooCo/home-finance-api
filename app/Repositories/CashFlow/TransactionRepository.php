@@ -96,8 +96,8 @@ class TransactionRepository implements TransactionRepositoryInterface
             $query->whereBetween('purchase_date', [$filters['purchaseDateRange'][0], $filters['purchaseDateRange'][1]]);
         }
 
-        $reconciled = $filters['reconciled'] ? true : false;
-        $notReconciled = $filters['notReconciled'] ? true : false;
+        $reconciled = isset($filters['reconciled']) && !$filters['reconciled'] ? false : true;
+        $notReconciled = isset($filters['notReconciled']) && !$filters['notReconciled'] ? false : true;
 
         if ($reconciled && !$notReconciled) {
             $query->where('is_reconciled', 1);
