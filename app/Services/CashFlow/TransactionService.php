@@ -10,7 +10,7 @@ use App\Repositories\CashFlow\Interfacies\TransactionRepositoryInterface;
 
 class TransactionService
 {
-    private const MAX_ALLOWED_LIST_RESPONSE = 1000;
+    private const MAX_ALLOWED_LIST_RESPONSE = 20000;
     protected $repository;
 
     public function __construct(TransactionRepositoryInterface $repository)
