@@ -22,6 +22,13 @@ class TransactionController extends Controller
         return $this->sendResponse($transactions, 'entities collection');
     }
 
+    public function export(Request $request)
+    {
+        ini_set('memory_limit', '512M');
+        $filters = $request->query();
+        return $this->service->export($filters);
+    }
+
     public function create(Request $request)
     {
         $data = $request->all();

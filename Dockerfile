@@ -3,8 +3,9 @@ FROM php:8.2-apache
 WORKDIR /var/www/html/
 
 RUN apt-get update \
-    && apt-get install -y zip git unzip \
-    && docker-php-ext-install pdo pdo_mysql
+    && apt-get install -y zip git unzip libpng-dev libjpeg-dev libfreetype6-dev libzip-dev \
+    && docker-php-ext-configure gd --with-freetype --with-jpeg \
+    && docker-php-ext-install pdo pdo_mysql gd zip
 
 RUN curl -sS https://getcomposer.org/installer | php -- \
         --filename=composer \

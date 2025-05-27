@@ -7,6 +7,8 @@ use App\Models\CashFlow\Transaction;
 use App\Models\Settings\PaymentStatusType;
 use App\Models\TransactionType;
 use App\Repositories\CashFlow\Interfacies\TransactionRepositoryInterface;
+use App\Exports\TransactionExport;
+use Maatwebsite\Excel\Facades\Excel;
 
 class TransactionService
 {
@@ -40,6 +42,47 @@ class TransactionService
             'transactions' => $transactions,
             'totals' => $totals,
         ];
+    }
+
+    public function export(array $filters)
+    {
+        // TODO: criar fctory
+        $transactions = $this->repository->getAll($filters);
+        $transactions = $this->mapTransactionsToExport($transactions);
+        $export = new TransactionExport($transactions);
+        return Excel::download($export, 'transactions.xlsx');
+    }
+
+    private function mapTransactionsToExport(array $transactions)
+    {
+        $mappedTransactions = [];
+        foreach($transactions as $transaction) {
+            $mappedTransactions[] = [
+                'Id' => $transaction['id'],
+                'Tipo de transação' => $transaction['transaction_type']['name'] . ' (' . $transaction['transaction_type']['id'] . ')',
+                'Tipo de pagamento' => $transaction['payment_type']['name'] . ' (' . $transaction['payment_type']['id'] . ')',
+                'Status de pagamento' => $transaction['payment_status']['name'] . ' (' . $transaction['payment_status']['id'] . ')',
+                'Data de compra' => $transaction['purchase_date'],
+                'Data de vencimento' => $transaction['due_date'],
+                'Data de pagamento' => $transaction['payment_date'],
+                'Total' => $transaction['amount'],
+                'Parcela atual' => $transaction['current_installment'],
+                'Total de parcelas' => $transaction['total_installments'],
+                'Categoria primária' => $transaction['primary_category']['name'] . ' (' . $transaction['primary_category']['id'] . ')',
+                'Categoria secundária' => $transaction['secondary_category']['name'] . ' (' . $transaction['secondary_category']['id'] . ')',
+                'Categoria específica' => $transaction['specific_category']['name'] . ' (' . $transaction['specific_category']['id'] . ')',
+                'Descrição' => $transaction['description'],
+                'Observação primária' => $transaction['primary_note'],
+                'Observação secundária' => $transaction['secondary_note'],
+                'Média de gastos' => $transaction['spending_average'],
+                'Real' => $transaction['is_real'],
+                'Reconciliado' => $transaction['is_reconciled'],
+                'Data de criação' => $transaction['created_at'],
+                'Data de alteração' => $transaction['updated_at'],
+                'Id Centro de Custo' => $transaction['cost_center_id'],
+            ];
+        }
+        return $mappedTransactions;
     }
 
     private function getTotals($transactions, $historyTotals)
