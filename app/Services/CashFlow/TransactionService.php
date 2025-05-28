@@ -46,7 +46,7 @@ class TransactionService
 
     public function export(array $filters)
     {
-        // TODO: criar fctory
+        // TODO: criar factory
         $transactions = $this->repository->getAll($filters);
         $transactions = $this->mapTransactionsToExport($transactions);
         $export = new TransactionExport($transactions);
@@ -97,7 +97,11 @@ class TransactionService
             'forecast_balance_amount' => round($forecastBalanceAmount, 2),
             'executed_balance_amount' => round($executedBalanceAmount, 2),
             'forecast_expense_amount' => round($totals['forecast_expense_amount'], 2),
+            'executed_expense_amount' => round($totals['executed_expense_amount'], 2),
+            'pending_expense_amount' => round(($totals['forecast_expense_amount'] - $totals['executed_expense_amount']), 2),
             'forecast_revenue_amount' => round($totals['forecast_revenue_amount'], 2),
+            'executed_revenue_amount' => round($totals['executed_revenue_amount'], 2),
+            'pending_revenue_amount' => round(($totals['forecast_revenue_amount'] - $totals['executed_revenue_amount']), 2),
         ];
     }
 

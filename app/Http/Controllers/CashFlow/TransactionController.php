@@ -22,6 +22,14 @@ class TransactionController extends Controller
         return $this->sendResponse($transactions, 'entities collection');
     }
 
+    public function getTotalSummary(Request $request)
+    {
+        $filters = $request->query();
+        $data = $this->service->list($filters);
+        unset($data['transactions']);
+        return $this->sendResponse($data, 'entities collection');
+    }
+
     public function export(Request $request)
     {
         ini_set('memory_limit', '512M');
