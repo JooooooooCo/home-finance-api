@@ -21,3 +21,4 @@ jobs:
             git fetch origin
             git reset --hard origin/main
             docker compose up -d
+            docker compose exec -T home_finance_api php artisan migrate --force
