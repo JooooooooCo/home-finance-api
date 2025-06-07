@@ -27,10 +27,10 @@ class BudgetPrimaryCategoryRepository
             ->toArray();
     }
 
-    // public function update(int $id, array $data): BudgetPrimaryCategory
-    // {
-    //     $model = $this->findById($id);
-    //     $model->fill($data)->save();
-    //     return $model;
-    // }
+    public function deleteByBudgetId(int $budgetId): void
+    {
+        $this->model
+            ->where('budget_id', $budgetId)
+            ->delete();
+    }
 }

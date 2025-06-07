@@ -7,11 +7,10 @@ use App\Traits\TenantScoped;
 use App\Traits\TenantAttributeTrait;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\Settings\SpecificCategory;
-use Illuminate\Database\Eloquent\SoftDeletes;
 
 class BudgetSpecificCategory extends Model
 {
-  use SoftDeletes, TenantAttributeTrait, TenantScoped;
+  use TenantAttributeTrait, TenantScoped;
 
   protected $table = 'budget_specific_categories';
 
@@ -21,6 +20,11 @@ class BudgetSpecificCategory extends Model
     'specific_category_id',
     'percentage',
   ];
+  
+  public function getPercentageAttribute($value)
+  {
+    return (int) $value;
+  }
 
   public function secondaryCategory()
   {

@@ -30,11 +30,11 @@ class BudgetController extends Controller
         return $this->sendResponse($budget, 'entity details');
     }
 
-    public function update(Request $request)
+    public function replaceCategories(Request $request)
     {
-        // $id = $request->route('id');
-        // $data = $request->all();
-        // $budget = $this->service->update($id, $data);
-        // return $this->sendResponse($budget, 'Success, entity updated');
+        $budgetId = $request->route('id');
+        $data = $request->all();
+        $budget = $this->service->replaceCategories($budgetId, $data);
+        return $this->sendResponse($budget, 'Success, entity updated');
     }
 }

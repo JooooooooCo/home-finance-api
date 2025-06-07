@@ -34,7 +34,7 @@ class BudgetService
             throw new Exception("Informe o ano e mês", 422);
         }
         
-        if ($this->repository->findByYearMonth($data['year'], $data['month'])->isNotEmpty()) {
+        if ($this->repository->findByYearMonth($data['year'], $data['month'])) {
             throw new Exception("Já existe budget definido para o ano e mês informado", 422);
         }
 
@@ -43,8 +43,32 @@ class BudgetService
             'month' => $data['month'],
         ]);
 
-        $primaryCategories = $data['categories'] ?? [];
+        $this->storeCategories($data['categories'] ?? [], $budget);
 
+        return $budget;
+    }
+
+    public function replaceCategories(int $budgetId, array $data): Budget
+    {
+        if (empty($budgetId)) {
+            throw new Exception("Informe o ID do budget", 422);
+        }
+
+        $budget = $this->repository->findById($budgetId);
+
+        if (empty($budget)) {
+            throw new Exception("Budget não encontrado", 404);
+        }
+
+        $this->repositoryPrimaryCategory->deleteByBudgetId($budgetId);
+
+        $this->storeCategories($data['categories'] ?? [], $budget);
+
+        return $budget;
+    }
+
+    private function storeCategories(array $primaryCategories, Budget $budget): void
+    {
         foreach ($primaryCategories as $primaryCategory) {
             $budgetPrimaryCategory = $this->repositoryPrimaryCategory->create([
                 'budget_id' => $budget->id,
@@ -70,12 +94,10 @@ class BudgetService
                         'budget_id' => $budget->id,
                         'specific_category_id' => $specificCategory['id'],
                         'percentage' => $specificCategory['budget'],
-                    ]);                    
+                    ]);
                 }
             }
         }
-
-        return $budget;
     }
 
     public function get(array $filters)
@@ -99,14 +121,14 @@ class BudgetService
                 $specificCategories = $this->repositorySpecificCategory->listByBudgetSecondaryCategoryId($secondaryCategory['id']);
                 $specificCategories = array_map(function ($specificCategory) {
                     return [
-                        'id' => $specificCategory['id'],
+                        'id' => $specificCategory['specific_category']['id'],
                         'name' => $specificCategory['specific_category']['name'],
                         'budget' => $specificCategory['percentage'],
                     ];
                 }, $specificCategories);
 
                 return [
-                    'id' => $secondaryCategory['id'],
+                    'id' => $secondaryCategory['secondary_category']['id'],
                     'name' => $secondaryCategory['secondary_category']['name'],
                     'budget' => $secondaryCategory['percentage'],
                     'children' => $specificCategories,
@@ -114,7 +136,7 @@ class BudgetService
             }, $secondaryCategories);
 
             return [
-                'id' => $primaryCategory['id'],
+                'id' => $primaryCategory['primary_category']['id'],
                 'name' => $primaryCategory['primary_category']['name'],
                 'budget' => $primaryCategory['percentage'],
                 'children' => $secondaryCategories,
@@ -129,9 +151,4 @@ class BudgetService
             'categories' => $primaryCategories,
         ];
     }
-
-    // public function update(int $id, array $data): Budget
-    // {
-    //     return $this->repository->update($id, $data);
-    // }
 }

@@ -27,10 +27,10 @@ class BudgetRepository
             ->first();
     }
 
-    // public function update(int $id, array $data): Budget
-    // {
-    //     $model = $this->findById($id);
-    //     $model->fill($data)->save();
-    //     return $model;
-    // }
+    public function findById(int $id): ?Budget
+    {
+        return $this->model
+            ->where('id', $id)
+            ->first();
+    }
 }
