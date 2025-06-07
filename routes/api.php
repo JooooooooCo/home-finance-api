@@ -20,3 +20,4 @@ Route::middleware('auth:api')->group(function () {
 
 require __DIR__ . '/api/settings.php';
 require __DIR__ . '/api/cashflow.php';
+require __DIR__ . '/api/budget.php';
