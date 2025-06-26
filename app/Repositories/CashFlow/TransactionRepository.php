@@ -132,4 +132,12 @@ class TransactionRepository implements TransactionRepositoryInterface
         $model = $this->findById($id);
         return $model->delete();
     }
+
+    public function getTotalRevenueForPeriod(string $startDate, string $endDate): float
+    {
+        return (float) $this->model
+            ->whereBetween('due_date', [$startDate, $endDate])
+            ->where('transaction_type_id', 2)
+            ->sum('amount');
+    }
 }

@@ -3,7 +3,6 @@
 namespace App\Repositories\Budget;
 
 use App\Models\Budget\Budget;
-use Illuminate\Database\Eloquent\Collection;
 
 class BudgetRepository
 {
