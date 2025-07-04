@@ -45,6 +45,10 @@ class BudgetResultsService
 
         $budget = $this->budgetService->get($filters);
 
+        if (!isset($budget['categories'])) {
+            return [];
+        }
+
         $budgetCategories = $this->indexCategoriesById($budget['categories']);
         
         $totalRevenue = $this->transactionRepository->getTotalRevenueForPeriod($filters['startDate'], $filters['endDate']);
