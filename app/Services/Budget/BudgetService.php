@@ -106,7 +106,7 @@ class BudgetService
             throw new Exception("Informe o ano e mês", 422);
         }
 
-        $budget = $this->repository->findByYearMonth($filters['year'], $filters['month']);
+        $budget = $this->repository->findMostRecentUntilYearMonth($filters['year'], $filters['month']);
 
         if (empty($budget)) {
             return [];
