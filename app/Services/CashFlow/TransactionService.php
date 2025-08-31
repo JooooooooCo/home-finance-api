@@ -143,18 +143,16 @@ class TransactionService
         ];
 
         foreach ($historyTotals as $historyTotal) {
-            if ($historyTotal['transaction_type_id'] == TransactionType::EXPENSE 
-                && $historyTotal['payment_status_id'] == PaymentStatusType::PAID) {
+            if ($historyTotal['transaction_type_id'] == TransactionType::EXPENSE) {
                 $totals['executed_expense_amount'] += $historyTotal['amount'];
             }
 
-            if ($historyTotal['transaction_type_id'] == TransactionType::REVENUE 
-                && $historyTotal['payment_status_id'] == PaymentStatusType::PAID) {
+            if ($historyTotal['transaction_type_id'] == TransactionType::REVENUE) {
                 $totals['executed_revenue_amount'] += $historyTotal['amount'];
             }
         }
 
-        return $totals['executed_revenue_amount'] - $totals['executed_expense_amount'] ;
+        return $totals['executed_revenue_amount'] - $totals['executed_expense_amount'];
     }
 
     public function create(array $data): Transaction
@@ -182,5 +180,61 @@ class TransactionService
     public function delete(int $id): void
     {
         $this->repository->delete($id);
+    }
+
+    public function getGeneralBalance(array $filters): array
+    {
+        $originalStartDate = new \DateTime($filters['dueDateRange'][0]);
+        $originalEndDate = new \DateTime($filters['dueDateRange'][1]);
+
+        $startDate = $originalStartDate->modify('-6 months')->format('Y-m-d');
+        $endDate = $originalEndDate->modify('+6 months')->format('Y-m-d');
+
+        $monthlyTotals = $this->repository->getMonthlyAmount($startDate, $endDate);
+        $initialBalance = $this->getInitialBalance($startDate);
+
+        return $this->calculateMonthlyBalances($startDate, $endDate, $monthlyTotals, $initialBalance);
+    }
+
+    private function getInitialBalance(string $startDate): float
+    {
+        $historyTotals = $this->repository->getHistoryExecutedAmount($startDate);
+        return $this->calcExecutedHistoryBalanceAmount($historyTotals);
+    }
+
+    private function calculateMonthlyBalances(string $startDate, string $endDate, array $monthlyTotals, float $initialBalance): array
+    {
+        $balances = [];
+        $currentBalance = $initialBalance;
+
+        $start = new \DateTime($startDate);
+        $end = new \DateTime($endDate);
+
+        while ($start <= $end) {
+            $yearMonth = $start->format('Y-m');
+            $monthlyRevenue = 0;
+            $monthlyExpense = 0;
+
+            foreach ($monthlyTotals as $total) {
+                if ($total['year_month'] === $yearMonth) {
+                    if ($total['transaction_type_id'] == TransactionType::REVENUE) {
+                        $monthlyRevenue += $total['amount'];
+                    } elseif ($total['transaction_type_id'] == TransactionType::EXPENSE) {
+                        $monthlyExpense += $total['amount'];
+                    }
+                }
+            }
+
+            $currentBalance += ($monthlyRevenue - $monthlyExpense);
+
+            $balances[] = [
+                'year_month' => $yearMonth,
+                'balance' => round($currentBalance, 2),
+            ];
+
+            $start->modify('+1 month');
+        }
+
+        return $balances;
     }
 }

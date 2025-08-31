@@ -30,6 +30,13 @@ class TransactionController extends Controller
         return $this->sendResponse($data, 'entities collection');
     }
 
+    public function getGeneralBalance(Request $request)
+    {
+        $filters = $request->query();
+        $balances = $this->service->getGeneralBalance($filters);
+        return $this->sendResponse($balances, 'General balance historical data');
+    }
+
     public function export(Request $request)
     {
         ini_set('memory_limit', '512M');

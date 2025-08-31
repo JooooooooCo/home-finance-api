@@ -140,4 +140,15 @@ class TransactionRepository implements TransactionRepositoryInterface
             ->where('transaction_type_id', 2)
             ->sum('amount');
     }
+
+    public function getMonthlyAmount(string $startDate, string $endDate): array
+    {
+        return $this->model
+            ->selectRaw("DATE_FORMAT(due_date, '%Y-%m') AS `year_month`, transaction_type_id, SUM(amount) AS amount")
+            ->whereBetween('due_date', [$startDate, $endDate])
+            ->groupBy('year_month', 'transaction_type_id')
+            ->orderBy('year_month')
+            ->get()
+            ->toArray();
+    }
 }
