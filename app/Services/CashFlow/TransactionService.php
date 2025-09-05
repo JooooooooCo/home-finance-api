@@ -196,9 +196,30 @@ class TransactionService
         return $this->calculateMonthlyBalances($startDate, $endDate, $monthlyTotals, $initialBalance);
     }
 
+    public function getPerPaymentTypeBalance(array $filters): array
+    {
+        $originalStartDate = new \DateTime($filters['dueDateRange'][0]);
+        $originalEndDate = new \DateTime($filters['dueDateRange'][1]);
+
+        $startDate = $originalStartDate->modify('-6 months')->format('Y-m-d');
+        $endDate = $originalEndDate->modify('+6 months')->format('Y-m-d');
+        $paymentTypeId = (int) $filters['paymentTypeId'];
+
+        $monthlyTotals = $this->repository->getMonthlyAmountByPaymentType($startDate, $endDate, $paymentTypeId);
+        $initialBalance = $this->getInitialBalanceByPaymentType($startDate, $paymentTypeId);
+
+        return $this->calculateMonthlyBalances($startDate, $endDate, $monthlyTotals, $initialBalance);
+    }
+
     private function getInitialBalance(string $startDate): float
     {
         $historyTotals = $this->repository->getHistoryExecutedAmount($startDate);
+        return $this->calcExecutedHistoryBalanceAmount($historyTotals);
+    }
+
+    private function getInitialBalanceByPaymentType(string $startDate, int $paymentTypeId): float
+    {
+        $historyTotals = $this->repository->getHistoryExecutedAmountByPaymentType($startDate, $paymentTypeId);
         return $this->calcExecutedHistoryBalanceAmount($historyTotals);
     }
 

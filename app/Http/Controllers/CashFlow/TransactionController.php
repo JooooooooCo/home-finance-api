@@ -37,6 +37,13 @@ class TransactionController extends Controller
         return $this->sendResponse($balances, 'General balance historical data');
     }
 
+    public function getPerPaymentTypeBalance(Request $request)
+    {
+        $filters = $request->query();
+        $balances = $this->service->getPerPaymentTypeBalance($filters);
+        return $this->sendResponse($balances, 'Per payment type balance historical data');
+    }
+
     public function export(Request $request)
     {
         ini_set('memory_limit', '512M');
