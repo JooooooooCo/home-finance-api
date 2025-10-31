@@ -2,10 +2,10 @@
 
 namespace App\Services\CashFlow;
 
+use App\Enums\TransactionType;
 use Exception;
 use App\Models\CashFlow\Transaction;
 use App\Models\Settings\PaymentStatusType;
-use App\Models\TransactionType;
 use App\Repositories\CashFlow\Interfacies\TransactionRepositoryInterface;
 use App\Exports\TransactionExport;
 use Maatwebsite\Excel\Facades\Excel;
@@ -59,7 +59,7 @@ class TransactionService
         foreach($transactions as $transaction) {
             $mappedTransactions[] = [
                 'Id' => $transaction['id'],
-                'Tipo de transação' => $transaction['transaction_type']['name'] . ' (' . $transaction['transaction_type']['id'] . ')',
+                'Tipo de transação' => $transaction['type'],
                 'Tipo de pagamento' => $transaction['payment_type']['name'] . ' (' . $transaction['payment_type']['id'] . ')',
                 'Status de pagamento' => $transaction['payment_status']['name'] . ' (' . $transaction['payment_status']['id'] . ')',
                 'Data de compra' => $transaction['purchase_date'],
@@ -89,8 +89,8 @@ class TransactionService
     {
         $totals = $this->calcFilteredTotals($transactions);
         $executedHistoryBalanceAmount = $this->calcExecutedHistoryBalanceAmount($historyTotals);
-        $forecastBalanceAmount = ($executedHistoryBalanceAmount + $totals['forecast_revenue_amount']) - $totals['forecast_expense_amount'];
-        $executedBalanceAmount = ($executedHistoryBalanceAmount + $totals['executed_revenue_amount']) - $totals['executed_expense_amount'];
+        $forecastBalanceAmount = ($executedHistoryBalanceAmount + $totals['forecast_income_amount']) - $totals['forecast_expense_amount'];
+        $executedBalanceAmount = ($executedHistoryBalanceAmount + $totals['executed_income_amount']) - $totals['executed_expense_amount'];
 
         return [
             'executed_history_balance_amount' => round($executedHistoryBalanceAmount, 2),
@@ -99,9 +99,9 @@ class TransactionService
             'forecast_expense_amount' => round($totals['forecast_expense_amount'], 2),
             'executed_expense_amount' => round($totals['executed_expense_amount'], 2),
             'pending_expense_amount' => round(($totals['forecast_expense_amount'] - $totals['executed_expense_amount']), 2),
-            'forecast_revenue_amount' => round($totals['forecast_revenue_amount'], 2),
-            'executed_revenue_amount' => round($totals['executed_revenue_amount'], 2),
-            'pending_revenue_amount' => round(($totals['forecast_revenue_amount'] - $totals['executed_revenue_amount']), 2),
+            'forecast_income_amount' => round($totals['forecast_income_amount'], 2),
+            'executed_income_amount' => round($totals['executed_income_amount'], 2),
+            'pending_income_amount' => round(($totals['forecast_income_amount'] - $totals['executed_income_amount']), 2),
         ];
     }
 
@@ -110,12 +110,12 @@ class TransactionService
         $totals = [
             'forecast_expense_amount' => 0,
             'executed_expense_amount' => 0,
-            'forecast_revenue_amount' => 0,
-            'executed_revenue_amount' => 0,
+            'forecast_income_amount' => 0,
+            'executed_income_amount' => 0,
         ];
 
         foreach ($transactions as $transaction) {
-            if ($transaction['transaction_type_id'] == TransactionType::EXPENSE) {
+            if ($transaction['type'] == TransactionType::EXPENSE->value) {
                 $totals['forecast_expense_amount'] += $transaction['amount'];
                 
                 if ($transaction['payment_status_id'] == PaymentStatusType::PAID) {
@@ -123,11 +123,11 @@ class TransactionService
                 }
             }
 
-            if ($transaction['transaction_type_id'] == TransactionType::REVENUE) {
-                $totals['forecast_revenue_amount'] += $transaction['amount'];
+            if ($transaction['type'] == TransactionType::INCOME->value) {
+                $totals['forecast_income_amount'] += $transaction['amount'];
                 
                 if ($transaction['payment_status_id'] == PaymentStatusType::PAID) {
-                    $totals['executed_revenue_amount'] += $transaction['amount'];
+                    $totals['executed_income_amount'] += $transaction['amount'];
                 }
             }
         }
@@ -139,20 +139,20 @@ class TransactionService
     {
         $totals = [
             'executed_expense_amount' => 0,
-            'executed_revenue_amount' => 0,
+            'executed_income_amount' => 0,
         ];
 
         foreach ($historyTotals as $historyTotal) {
-            if ($historyTotal['transaction_type_id'] == TransactionType::EXPENSE) {
+            if ($historyTotal['type'] == TransactionType::EXPENSE->value) {
                 $totals['executed_expense_amount'] += $historyTotal['amount'];
             }
 
-            if ($historyTotal['transaction_type_id'] == TransactionType::REVENUE) {
-                $totals['executed_revenue_amount'] += $historyTotal['amount'];
+            if ($historyTotal['type'] == TransactionType::INCOME->value) {
+                $totals['executed_income_amount'] += $historyTotal['amount'];
             }
         }
 
-        return $totals['executed_revenue_amount'] - $totals['executed_expense_amount'];
+        return $totals['executed_income_amount'] - $totals['executed_expense_amount'];
     }
 
     public function create(array $data): Transaction
@@ -233,20 +233,20 @@ class TransactionService
 
         while ($start <= $end) {
             $yearMonth = $start->format('Y-m');
-            $monthlyRevenue = 0;
+            $monthlyIncome = 0;
             $monthlyExpense = 0;
 
             foreach ($monthlyTotals as $total) {
                 if ($total['year_month'] === $yearMonth) {
-                    if ($total['transaction_type_id'] == TransactionType::REVENUE) {
-                        $monthlyRevenue += $total['amount'];
-                    } elseif ($total['transaction_type_id'] == TransactionType::EXPENSE) {
+                    if ($total['type'] == TransactionType::INCOME->value) {
+                        $monthlyIncome += $total['amount'];
+                    } elseif ($total['type'] == TransactionType::EXPENSE->value) {
                         $monthlyExpense += $total['amount'];
                     }
                 }
             }
 
-            $currentBalance += ($monthlyRevenue - $monthlyExpense);
+            $currentBalance += ($monthlyIncome - $monthlyExpense);
 
             $balances[] = [
                 'year_month' => $yearMonth,

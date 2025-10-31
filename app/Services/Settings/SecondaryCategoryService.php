@@ -14,9 +14,9 @@ class SecondaryCategoryService
         $this->repository = $repository;
     }
 
-    public function list(?int $transactionTypeId): array
+    public function list(?string $type): array
     {
-        return $this->repository->getAll($transactionTypeId);
+        return $this->repository->getAll($type);
     }
 
     public function create(array $data): SecondaryCategory

@@ -2,6 +2,7 @@
 
 namespace App\Repositories\CashFlow;
 
+use App\Enums\TransactionType;
 use App\Models\CashFlow\Transaction;
 use App\Repositories\CashFlow\Interfacies\TransactionRepositoryInterface;
 
@@ -17,7 +18,6 @@ class TransactionRepository implements TransactionRepositoryInterface
     public function getAll(array $filters): array
     {
         $query = $this->model->with([
-            'transactionType:id,name',
             'paymentType:id,name',
             'paymentStatus:id,name',
             'primaryCategory:id,name',
@@ -28,7 +28,7 @@ class TransactionRepository implements TransactionRepositoryInterface
         $query = $this->applyFilters($query, $filters);
 
         $query->orderBy('due_date', 'asc')
-            ->orderBy('transaction_type_id', 'desc')
+            ->orderBy('type', 'desc')
             ->orderBy('payment_type_id', 'asc')
             ->orderBy('purchase_date', 'asc');
 
@@ -38,9 +38,9 @@ class TransactionRepository implements TransactionRepositoryInterface
     public function getHistoryExecutedAmount(String $endDate): array
     {
         return $this->model
-            ->selectRaw('transaction_type_id, payment_status_id, SUM(amount) as amount')
+            ->selectRaw('type, payment_status_id, SUM(amount) as amount')
             ->where('due_date', '<', $endDate)
-            ->groupBy('transaction_type_id')
+            ->groupBy('type')
             ->groupBy('payment_status_id')
             ->get()
             ->toArray();
@@ -49,10 +49,10 @@ class TransactionRepository implements TransactionRepositoryInterface
     public function getHistoryExecutedAmountByPaymentType(String $endDate, int $paymentTypeId): array
     {
         return $this->model
-            ->selectRaw('transaction_type_id, payment_status_id, SUM(amount) as amount')
+            ->selectRaw('type, payment_status_id, SUM(amount) as amount')
             ->where('due_date', '<', $endDate)
             ->where('payment_type_id', $paymentTypeId)
-            ->groupBy('transaction_type_id')
+            ->groupBy('type')
             ->groupBy('payment_status_id')
             ->get()
             ->toArray();
@@ -60,8 +60,8 @@ class TransactionRepository implements TransactionRepositoryInterface
 
     private function applyFilters($query, array $filters)
     {
-        if (!empty($filters['transactionTypeIds'])) {
-            $query->whereIn('transaction_type_id', $filters['transactionTypeIds']);
+        if (!empty($filters['type'])) {
+            $query->whereIn('type', $filters['type']);
         }
 
         if (!empty($filters['paymentTypeIds'])) {
@@ -145,20 +145,20 @@ class TransactionRepository implements TransactionRepositoryInterface
         return $model->delete();
     }
 
-    public function getTotalRevenueForPeriod(string $startDate, string $endDate): float
+    public function getTotalIncomeForPeriod(string $startDate, string $endDate): float
     {
         return (float) $this->model
             ->whereBetween('due_date', [$startDate, $endDate])
-            ->where('transaction_type_id', 2)
+            ->where('type', TransactionType::INCOME->value)
             ->sum('amount');
     }
 
     public function getMonthlyAmount(string $startDate, string $endDate): array
     {
         return $this->model
-            ->selectRaw("DATE_FORMAT(due_date, '%Y-%m') AS `year_month`, transaction_type_id, SUM(amount) AS amount")
+            ->selectRaw("DATE_FORMAT(due_date, '%Y-%m') AS `year_month`, type, SUM(amount) AS amount")
             ->whereBetween('due_date', [$startDate, $endDate])
-            ->groupBy('year_month', 'transaction_type_id')
+            ->groupBy('year_month', 'type')
             ->orderBy('year_month')
             ->get()
             ->toArray();
@@ -167,10 +167,10 @@ class TransactionRepository implements TransactionRepositoryInterface
     public function getMonthlyAmountByPaymentType(string $startDate, string $endDate, int $paymentTypeId): array
     {
         return $this->model
-            ->selectRaw("DATE_FORMAT(due_date, '%Y-%m') AS `year_month`, transaction_type_id, SUM(amount) AS amount")
+            ->selectRaw("DATE_FORMAT(due_date, '%Y-%m') AS `year_month`, type, SUM(amount) AS amount")
             ->whereBetween('due_date', [$startDate, $endDate])
             ->where('payment_type_id', $paymentTypeId)
-            ->groupBy('year_month', 'transaction_type_id')
+            ->groupBy('year_month', 'type')
             ->orderBy('year_month')
             ->get()
             ->toArray();

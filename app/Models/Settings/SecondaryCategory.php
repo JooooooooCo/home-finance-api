@@ -2,9 +2,9 @@
 
 namespace App\Models\Settings;
 
+use App\Enums\TransactionType;
 use App\Models\CostCenter;
 use App\Traits\TenantScoped;
-use App\Models\TransactionType;
 use App\Models\CashFlow\Transaction;
 use App\Traits\TenantAttributeTrait;
 use Illuminate\Database\Eloquent\Model;
@@ -19,18 +19,17 @@ class SecondaryCategory extends Model
 
   protected $fillable = [
     'name',
-    'transaction_type_id',
     'cost_center_id',
+    'type',
   ];
+
+  protected $casts = [
+    'type' => TransactionType::class,
+  ];  
 
   public function costCenter()
   {
     return $this->belongsTo(CostCenter::class);
-  }
-
-  public function transactionType()
-  {
-    return $this->belongsTo(TransactionType::class);
   }
 
   public function specificCategories()

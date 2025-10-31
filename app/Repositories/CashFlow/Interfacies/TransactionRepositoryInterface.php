@@ -11,7 +11,7 @@ interface TransactionRepositoryInterface
   public function getHistoryExecutedAmountByPaymentType(String $endDate, int $paymentTypeId): array;
   public function getMonthlyAmount(string $startDate, string $endDate): array;
   public function getMonthlyAmountByPaymentType(string $startDate, string $endDate, int $paymentTypeId): array;
-  public function getTotalRevenueForPeriod(string $startDate, string $endDate): float;
+  public function getTotalIncomeForPeriod(string $startDate, string $endDate): float;
   public function create(array $data): Transaction;
   public function findById(int $id):? Transaction;
   public function update(int $id, array $data): Transaction;

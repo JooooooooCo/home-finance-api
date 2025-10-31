@@ -14,8 +14,6 @@ Route::middleware('auth:api')->group(function () {
     Route::get('/cost-center/{id}', 'App\Http\Controllers\CostCenterController@get');
     Route::put('/cost-center/{id}', 'App\Http\Controllers\CostCenterController@update');
     Route::delete('/cost-center/{id}', 'App\Http\Controllers\CostCenterController@delete');
-
-    Route::get('/transaction-type', 'App\Http\Controllers\TransactionTypeController@list');
 });
 
 require __DIR__ . '/api/settings.php';

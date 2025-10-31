@@ -6,7 +6,6 @@ namespace App\Providers;
 // use Illuminate\Support\Facades\File;
 use Illuminate\Support\ServiceProvider;
 use App\Repositories\CostCenterRepository;
-use App\Repositories\TransactionTypeRepository;
 use App\Repositories\CashFlow\TransactionRepository;
 use App\Repositories\Settings\PaymentTypeRepository;
 use App\Repositories\Settings\PrimaryCategoryRepository;
@@ -14,7 +13,6 @@ use App\Repositories\Settings\SpecificCategoryRepository;
 use App\Repositories\Settings\PaymentStatusTypeRepository;
 use App\Repositories\Settings\SecondaryCategoryRepository;
 use App\Repositories\Interfacies\CostCenterRepositoryInterface;
-use App\Repositories\Interfacies\TransactionTypeRepositoryInterface;
 use App\Repositories\CashFlow\Interfacies\TransactionRepositoryInterface;
 use App\Repositories\Settings\Interfacies\PaymentTypeRepositoryInterface;
 use App\Repositories\Settings\Interfacies\PrimaryCategoryRepositoryInterface;
@@ -32,7 +30,6 @@ class AppServiceProvider extends ServiceProvider
     public function register()
     {
         $this->app->bind(CostCenterRepositoryInterface::class, CostCenterRepository::class);
-        $this->app->bind(TransactionTypeRepositoryInterface::class, TransactionTypeRepository::class);
         $this->app->bind(PaymentTypeRepositoryInterface::class, PaymentTypeRepository::class);
         $this->app->bind(PaymentStatusTypeRepositoryInterface::class, PaymentStatusTypeRepository::class);
         $this->app->bind(PrimaryCategoryRepositoryInterface::class, PrimaryCategoryRepository::class);

@@ -17,14 +17,14 @@ class SecondaryCategoryController extends Controller
 
     public function list(Request $request)
     {
-        $transactionTypeId = $request->get('transaction-type-id');
-        $itens = $this->service->list($transactionTypeId);
+        $type = $request->get('type');
+        $itens = $this->service->list($type);
         return $this->sendResponse($itens, 'entities collection');
     }
 
     public function create(Request $request)
     {
-        $data = $request->validate(['name' => 'required|max:200', 'transaction_type_id' => 'required|max:200']);
+        $data = $request->validate(['name' => 'required|max:200', 'type' => 'required|max:200']);
         $item = $this->service->create($data);
         return $this->sendResponse($item, 'Success, entity created');
     }
@@ -39,7 +39,7 @@ class SecondaryCategoryController extends Controller
     public function update(Request $request)
     {
         $id = $request->route('id');
-        $data = $request->validate(['name' => 'required|max:200', 'transaction_type_id' => 'required|max:200']);
+        $data = $request->validate(['name' => 'required|max:200', 'type' => 'required|max:200']);
         $item = $this->service->update($id, $data);
         return $this->sendResponse($item, 'Success, entity updated');
     }

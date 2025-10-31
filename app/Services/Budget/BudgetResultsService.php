@@ -2,6 +2,7 @@
 
 namespace App\Services\Budget;
 
+use App\Enums\TransactionType;
 use App\Helpers\dateHelper;
 use Exception;
 use App\Repositories\Budget\BudgetRepository;
@@ -51,9 +52,9 @@ class BudgetResultsService
 
         $budgetCategories = $this->indexCategoriesById($budget['categories']);
 
-        $totalRevenue = $this->transactionRepository->getTotalRevenueForPeriod($filters['startDate'], $filters['endDate']);
+        $totalIncome = $this->transactionRepository->getTotalIncomeForPeriod($filters['startDate'], $filters['endDate']);
         $transactions = $this->getExecutedExpenses($filters);
-        $executedBudget = $this->initializeExecutedBudgetFromCategories($budget['categories'], $totalRevenue);
+        $executedBudget = $this->initializeExecutedBudgetFromCategories($budget['categories'], $totalIncome);
 
         foreach ($transactions as $transaction) {
             $executedBudget = $this->ensureTransactionCategoriesExist($executedBudget, $transaction);
@@ -67,7 +68,7 @@ class BudgetResultsService
     {
         
         return $this->transactionRepository->getAll([
-            'transactionTypeIds' => [1],
+            'type' => [TransactionType::EXPENSE->value],
             'paymentStatusIds' => [1],
             'dueDateRange' => [$filters['startDate'], $filters['endDate']],
         ]);
@@ -105,12 +106,12 @@ class BudgetResultsService
         return $executedBudget;
     }
 
-    private function initializeExecutedBudgetFromCategories(array $categories, float $totalRevenue): array
+    private function initializeExecutedBudgetFromCategories(array $categories, float $totalIncome): array
     {
         $executedBudget = [];
         
         foreach ($categories as $primaryCategory) {
-            $primaryBudgetAmount = round(($primaryCategory['budget'] / 100) * $totalRevenue, 2);
+            $primaryBudgetAmount = round(($primaryCategory['budget'] / 100) * $totalIncome, 2);
             
             $executedBudget[$primaryCategory['id']] = [
                 'id' => $primaryCategory['id'],
