@@ -6,32 +6,32 @@ use App\Enums\TransactionType;
 use App\Helpers\dateHelper;
 use Exception;
 use App\Repositories\Budget\BudgetRepository;
-use App\Repositories\Budget\BudgetPrimaryCategoryRepository;
-use App\Repositories\Budget\BudgetSpecificCategoryRepository;
-use App\Repositories\Budget\BudgetSecondaryCategoryRepository;
+use App\Repositories\Budget\BudgetClassificationRepository;
+use App\Repositories\Budget\BudgetSubCategoryRepository;
+use App\Repositories\Budget\BudgetCategoryRepository;
 use App\Repositories\CashFlow\Interfacies\TransactionRepositoryInterface;
 
 class BudgetResultsService
 {
     protected $repository;
-    protected $primaryCategoryRepository;
-    protected $secondaryCategoryRepository;
-    protected $specificCategoryRepository;
+    protected $classificationRepository;
+    protected $categoryRepository;
+    protected $subCategoryRepository;
     protected $transactionRepository;
     protected $budgetService;
 
     public function __construct(
         BudgetRepository $repository,
-        BudgetPrimaryCategoryRepository $primaryCategoryRepository,
-        BudgetSecondaryCategoryRepository $secondaryCategoryRepository,
-        BudgetSpecificCategoryRepository $specificCategoryRepository,
+        BudgetClassificationRepository $classificationRepository,
+        BudgetCategoryRepository $categoryRepository,
+        BudgetSubCategoryRepository $subCategoryRepository,
         TransactionRepositoryInterface $transactionRepository,
         BudgetService $budgetService,
     ) {
         $this->repository = $repository;
-        $this->primaryCategoryRepository = $primaryCategoryRepository;
-        $this->secondaryCategoryRepository = $secondaryCategoryRepository;
-        $this->specificCategoryRepository = $specificCategoryRepository;
+        $this->classificationRepository = $classificationRepository;
+        $this->categoryRepository = $categoryRepository;
+        $this->subCategoryRepository = $subCategoryRepository;
         $this->transactionRepository = $transactionRepository;
         $this->budgetService = $budgetService;
     }
@@ -95,11 +95,11 @@ class BudgetResultsService
     {
         $executedBudget = array_values($executedBudget);
 
-        foreach ($executedBudget as &$primaryCategory) {
-            $primaryCategory['children'] = array_values($primaryCategory['children']);
+        foreach ($executedBudget as &$classification) {
+            $classification['children'] = array_values($classification['children']);
 
-            foreach ($primaryCategory['children'] as &$secondaryCategory) {
-                $secondaryCategory['children'] = array_values($secondaryCategory['children']);
+            foreach ($classification['children'] as &$category) {
+                $category['children'] = array_values($category['children']);
             }
         };
 
@@ -110,42 +110,42 @@ class BudgetResultsService
     {
         $executedBudget = [];
         
-        foreach ($categories as $primaryCategory) {
-            $primaryBudgetAmount = round(($primaryCategory['budget'] / 100) * $totalIncome, 2);
+        foreach ($categories as $classification) {
+            $classificationBudgetAmount = round(($classification['budget'] / 100) * $totalIncome, 2);
             
-            $executedBudget[$primaryCategory['id']] = [
-                'id' => $primaryCategory['id'],
-                'name' => $primaryCategory['name'],
-                'budget_amount' => $primaryBudgetAmount,
-                'budget_percentage' => $primaryCategory['budget'],
+            $executedBudget[$classification['id']] = [
+                'id' => $classification['id'],
+                'name' => $classification['name'],
+                'budget_amount' => $classificationBudgetAmount,
+                'budget_percentage' => $classification['budget'],
                 'executed_amount' => 0,
                 'executed_percentage' => 0,
                 'children' => [],
             ];
             
-            if (!empty($primaryCategory['children'])) {
-                foreach ($primaryCategory['children'] as $secondaryCategory) {
-                    $secondaryBudgetAmount = round(($secondaryCategory['budget'] / 100) * $primaryBudgetAmount, 2);
+            if (!empty($classification['children'])) {
+                foreach ($classification['children'] as $category) {
+                    $categoryBudgetAmount = round(($category['budget'] / 100) * $classificationBudgetAmount, 2);
                     
-                    $executedBudget[$primaryCategory['id']]['children'][$secondaryCategory['id']] = [
-                        'id' => $secondaryCategory['id'],
-                        'name' => $secondaryCategory['name'],
-                        'budget_amount' => $secondaryBudgetAmount,
-                        'budget_percentage' => $secondaryCategory['budget'],
+                    $executedBudget[$classification['id']]['children'][$category['id']] = [
+                        'id' => $category['id'],
+                        'name' => $category['name'],
+                        'budget_amount' => $categoryBudgetAmount,
+                        'budget_percentage' => $category['budget'],
                         'executed_amount' => 0,
                         'executed_percentage' => 0,
                         'children' => [],
                     ];
                     
-                    if (!empty($secondaryCategory['children'])) {
-                        foreach ($secondaryCategory['children'] as $specificCategory) {
-                            $specificBudgetAmount = round(($specificCategory['budget'] / 100) * $secondaryBudgetAmount, 2);
+                    if (!empty($category['children'])) {
+                        foreach ($category['children'] as $subCategory) {
+                            $subCategoryBudgetAmount = round(($subCategory['budget'] / 100) * $categoryBudgetAmount, 2);
                             
-                            $executedBudget[$primaryCategory['id']]['children'][$secondaryCategory['id']]['children'][$specificCategory['id']] = [
-                                'id' => $specificCategory['id'],
-                                'name' => $specificCategory['name'],
-                                'budget_amount' => $specificBudgetAmount,
-                                'budget_percentage' => $specificCategory['budget'],
+                            $executedBudget[$classification['id']]['children'][$category['id']]['children'][$subCategory['id']] = [
+                                'id' => $subCategory['id'],
+                                'name' => $subCategory['name'],
+                                'budget_amount' => $subCategoryBudgetAmount,
+                                'budget_percentage' => $subCategory['budget'],
                                 'executed_amount' => 0,
                                 'executed_percentage' => 0,
                                 'children' => [],
@@ -161,15 +161,15 @@ class BudgetResultsService
 
     private function ensureTransactionCategoriesExist(array $executedBudget, array $transaction): array
     {
-        $primaryCategoryId = $transaction['primary_category_id'];
-        $secondaryCategoryId = $transaction['secondary_category_id'];
-        $specificCategoryId = $transaction['specific_category_id'];
+        $classificationId = $transaction['classification_id'];
+        $categoryId = $transaction['category_id'];
+        $subCategoryId = $transaction['sub_category_id'];
 
-        if ($primaryCategoryId && !isset($executedBudget[$primaryCategoryId])) {
-            $primaryName = $transaction['primary_category']['name'] ?? 'Unknown';
-            $executedBudget[$primaryCategoryId] = [
-                'id' => $primaryCategoryId,
-                'name' => $primaryName,
+        if ($classificationId && !isset($executedBudget[$classificationId])) {
+            $classificationName = $transaction['classification']['name'] ?? 'Unknown';
+            $executedBudget[$classificationId] = [
+                'id' => $classificationId,
+                'name' => $classificationName,
                 'budget_amount' => 0,
                 'budget_percentage' => 0,
                 'executed_amount' => 0,
@@ -178,12 +178,12 @@ class BudgetResultsService
             ];
         }
 
-        if ($secondaryCategoryId && isset($executedBudget[$primaryCategoryId]) &&
-            !isset($executedBudget[$primaryCategoryId]['children'][$secondaryCategoryId])) {
-            $secondaryName = $transaction['secondary_category']['name'] ?? 'Unknown';
-            $executedBudget[$primaryCategoryId]['children'][$secondaryCategoryId] = [
-                'id' => $secondaryCategoryId,
-                'name' => $secondaryName,
+        if ($categoryId && isset($executedBudget[$classificationId]) &&
+            !isset($executedBudget[$classificationId]['children'][$categoryId])) {
+            $categoryName = $transaction['category']['name'] ?? 'Unknown';
+            $executedBudget[$classificationId]['children'][$categoryId] = [
+                'id' => $categoryId,
+                'name' => $categoryName,
                 'budget_amount' => 0,
                 'budget_percentage' => 0,
                 'executed_amount' => 0,
@@ -192,12 +192,12 @@ class BudgetResultsService
             ];
         }
 
-        if ($specificCategoryId && isset($executedBudget[$primaryCategoryId]['children'][$secondaryCategoryId]) &&
-            !isset($executedBudget[$primaryCategoryId]['children'][$secondaryCategoryId]['children'][$specificCategoryId])) {
-            $specificName = $transaction['specific_category']['name'] ?? 'Unknown';
-            $executedBudget[$primaryCategoryId]['children'][$secondaryCategoryId]['children'][$specificCategoryId] = [
-                'id' => $specificCategoryId,
-                'name' => $specificName,
+        if ($subCategoryId && isset($executedBudget[$classificationId]['children'][$categoryId]) &&
+            !isset($executedBudget[$classificationId]['children'][$categoryId]['children'][$subCategoryId])) {
+            $subCategoryName = $transaction['sub_category']['name'] ?? 'Unknown';
+            $executedBudget[$classificationId]['children'][$categoryId]['children'][$subCategoryId] = [
+                'id' => $subCategoryId,
+                'name' => $subCategoryName,
                 'budget_amount' => 0,
                 'budget_percentage' => 0,
                 'executed_amount' => 0,
@@ -211,44 +211,44 @@ class BudgetResultsService
 
     private function addTransactionToExecutedBudget(array $executedBudget, array $transaction, array $budgetCategories): array
     {
-        $primaryCategoryId = $transaction['primary_category_id'];
-        $secondaryCategoryId = $transaction['secondary_category_id'];
-        $specificCategoryId = $transaction['specific_category_id'];
+        $classificationId = $transaction['classification_id'];
+        $categoryId = $transaction['category_id'];
+        $subCategoryId = $transaction['sub_category_id'];
         $amount = (float) $transaction['amount'];
 
-        if (isset($executedBudget[$primaryCategoryId])) {
-            $executedBudget[$primaryCategoryId]['executed_amount'] += $amount;
-            $executedBudget[$primaryCategoryId]['executed_amount'] = round($executedBudget[$primaryCategoryId]['executed_amount'], 2);
+        if (isset($executedBudget[$classificationId])) {
+            $executedBudget[$classificationId]['executed_amount'] += $amount;
+            $executedBudget[$classificationId]['executed_amount'] = round($executedBudget[$classificationId]['executed_amount'], 2);
 
-            if ($executedBudget[$primaryCategoryId]['budget_amount'] > 0) {
-                $executedBudget[$primaryCategoryId]['executed_percentage'] = round(
-                    ($executedBudget[$primaryCategoryId]['executed_amount'] / $executedBudget[$primaryCategoryId]['budget_amount']) * 100, 2
+            if ($executedBudget[$classificationId]['budget_amount'] > 0) {
+                $executedBudget[$classificationId]['executed_percentage'] = round(
+                    ($executedBudget[$classificationId]['executed_amount'] / $executedBudget[$classificationId]['budget_amount']) * 100, 2
                 );
             }
         }
 
-        if ($secondaryCategoryId && isset($executedBudget[$primaryCategoryId]['children'][$secondaryCategoryId])) {
-            $executedBudget[$primaryCategoryId]['children'][$secondaryCategoryId]['executed_amount'] += $amount;
-            $executedBudget[$primaryCategoryId]['children'][$secondaryCategoryId]['executed_amount'] =
-                round($executedBudget[$primaryCategoryId]['children'][$secondaryCategoryId]['executed_amount'], 2);
+        if ($categoryId && isset($executedBudget[$classificationId]['children'][$categoryId])) {
+            $executedBudget[$classificationId]['children'][$categoryId]['executed_amount'] += $amount;
+            $executedBudget[$classificationId]['children'][$categoryId]['executed_amount'] =
+                round($executedBudget[$classificationId]['children'][$categoryId]['executed_amount'], 2);
 
-            if ($executedBudget[$primaryCategoryId]['children'][$secondaryCategoryId]['budget_amount'] > 0) {
-                $executedBudget[$primaryCategoryId]['children'][$secondaryCategoryId]['executed_percentage'] = round(
-                    ($executedBudget[$primaryCategoryId]['children'][$secondaryCategoryId]['executed_amount'] /
-                     $executedBudget[$primaryCategoryId]['children'][$secondaryCategoryId]['budget_amount']) * 100, 2
+            if ($executedBudget[$classificationId]['children'][$categoryId]['budget_amount'] > 0) {
+                $executedBudget[$classificationId]['children'][$categoryId]['executed_percentage'] = round(
+                    ($executedBudget[$classificationId]['children'][$categoryId]['executed_amount'] /
+                     $executedBudget[$classificationId]['children'][$categoryId]['budget_amount']) * 100, 2
                 );
             }
         }
 
-        if ($specificCategoryId && isset($executedBudget[$primaryCategoryId]['children'][$secondaryCategoryId]['children'][$specificCategoryId])) {
-            $executedBudget[$primaryCategoryId]['children'][$secondaryCategoryId]['children'][$specificCategoryId]['executed_amount'] += $amount;
-            $executedBudget[$primaryCategoryId]['children'][$secondaryCategoryId]['children'][$specificCategoryId]['executed_amount'] =
-                round($executedBudget[$primaryCategoryId]['children'][$secondaryCategoryId]['children'][$specificCategoryId]['executed_amount'], 2);
+        if ($subCategoryId && isset($executedBudget[$classificationId]['children'][$categoryId]['children'][$subCategoryId])) {
+            $executedBudget[$classificationId]['children'][$categoryId]['children'][$subCategoryId]['executed_amount'] += $amount;
+            $executedBudget[$classificationId]['children'][$categoryId]['children'][$subCategoryId]['executed_amount'] =
+                round($executedBudget[$classificationId]['children'][$categoryId]['children'][$subCategoryId]['executed_amount'], 2);
 
-            if ($executedBudget[$primaryCategoryId]['children'][$secondaryCategoryId]['children'][$specificCategoryId]['budget_amount'] > 0) {
-                $executedBudget[$primaryCategoryId]['children'][$secondaryCategoryId]['children'][$specificCategoryId]['executed_percentage'] = round(
-                    ($executedBudget[$primaryCategoryId]['children'][$secondaryCategoryId]['children'][$specificCategoryId]['executed_amount'] /
-                     $executedBudget[$primaryCategoryId]['children'][$secondaryCategoryId]['children'][$specificCategoryId]['budget_amount']) * 100, 2
+            if ($executedBudget[$classificationId]['children'][$categoryId]['children'][$subCategoryId]['budget_amount'] > 0) {
+                $executedBudget[$classificationId]['children'][$categoryId]['children'][$subCategoryId]['executed_percentage'] = round(
+                    ($executedBudget[$classificationId]['children'][$categoryId]['children'][$subCategoryId]['executed_amount'] /
+                     $executedBudget[$classificationId]['children'][$categoryId]['children'][$subCategoryId]['budget_amount']) * 100, 2
                 );
             }
         }

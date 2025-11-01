@@ -2,37 +2,38 @@
 
 namespace App\Repositories\Settings;
 
-use App\Models\Settings\PrimaryCategory;
-use App\Repositories\Settings\Interfacies\PrimaryCategoryRepositoryInterface;
+use App\Models\Settings\SubCategory;
+use App\Repositories\Settings\Interfacies\SubCategoryRepositoryInterface;
 
-class PrimaryCategoryRepository implements PrimaryCategoryRepositoryInterface
+class SubCategoryRepository implements SubCategoryRepositoryInterface
 {
     protected $model;
 
-    public function __construct(PrimaryCategory $model)
+    public function __construct(SubCategory $model)
     {
         $this->model = $model;
     }
 
-    public function getAll(): array
+    public function getAll(int $categoryId): array
     {
         return $this->model
+            ->where('category_id', $categoryId)
             ->orderBy('name')
             ->get()
             ->toArray();
     }
 
-    public function create(array $data): PrimaryCategory
+    public function create(array $data): SubCategory
     {
         return $this->model->create($data);
     }
 
-    public function findById(int $id): PrimaryCategory
+    public function findById(int $id): SubCategory
     {
         return $this->model->findOrFail($id);
     }
 
-    public function update(int $id, array $data): PrimaryCategory
+    public function update(int $id, array $data): SubCategory
     {
         $model = $this->findById($id);
         $model->fill($data)->save();

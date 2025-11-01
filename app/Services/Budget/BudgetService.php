@@ -5,27 +5,27 @@ namespace App\Services\Budget;
 use Exception;
 use App\Models\Budget\Budget;
 use App\Repositories\Budget\BudgetRepository;
-use App\Repositories\Budget\BudgetPrimaryCategoryRepository;
-use App\Repositories\Budget\BudgetSpecificCategoryRepository;
-use App\Repositories\Budget\BudgetSecondaryCategoryRepository;
+use App\Repositories\Budget\BudgetClassificationRepository;
+use App\Repositories\Budget\BudgetSubCategoryRepository;
+use App\Repositories\Budget\BudgetCategoryRepository;
 
 class BudgetService
 {
     protected $repository;
-    protected $repositoryPrimaryCategory;
-    protected $repositorySecondaryCategory;
-    protected $repositorySpecificCategory;
+    protected $repositoryClassification;
+    protected $repositoryCategory;
+    protected $repositorySubCategory;
 
     public function __construct(
         BudgetRepository $repository,
-        BudgetPrimaryCategoryRepository $repositoryPrimaryCategory,
-        BudgetSecondaryCategoryRepository $repositorySecondaryCategory,
-        BudgetSpecificCategoryRepository $repositorySpecificCategory,
+        BudgetClassificationRepository $repositoryClassification,
+        BudgetCategoryRepository $repositoryCategory,
+        BudgetSubCategoryRepository $repositorySubCategory,
     ) {
         $this->repository = $repository;
-        $this->repositoryPrimaryCategory = $repositoryPrimaryCategory;
-        $this->repositorySecondaryCategory = $repositorySecondaryCategory;
-        $this->repositorySpecificCategory = $repositorySpecificCategory;
+        $this->repositoryClassification = $repositoryClassification;
+        $this->repositoryCategory = $repositoryCategory;
+        $this->repositorySubCategory = $repositorySubCategory;
     }
 
     public function create(array $data): Budget
@@ -60,40 +60,40 @@ class BudgetService
             throw new Exception("Budget não encontrado", 404);
         }
 
-        $this->repositoryPrimaryCategory->deleteByBudgetId($budgetId);
+        $this->repositoryClassification->deleteByBudgetId($budgetId);
 
         $this->storeCategories($data['categories'] ?? [], $budget);
 
         return $budget;
     }
 
-    private function storeCategories(array $primaryCategories, Budget $budget): void
+    private function storeCategories(array $classifications, Budget $budget): void
     {
-        foreach ($primaryCategories as $primaryCategory) {
-            $budgetPrimaryCategory = $this->repositoryPrimaryCategory->create([
+        foreach ($classifications as $classification) {
+            $budgetClassification = $this->repositoryClassification->create([
                 'budget_id' => $budget->id,
-                'primary_category_id' => $primaryCategory['id'],
-                'percentage' => $primaryCategory['budget'],
+                'classification_id' => $classification['id'],
+                'percentage' => $classification['budget'],
             ]);
 
-            $secondaryCategories = $primaryCategory['children'] ?? [];
+            $categories = $classification['children'] ?? [];
 
-            foreach ($secondaryCategories as $secondaryCategory) {
-                $budgetSecondaryCategory = $this->repositorySecondaryCategory->create([
-                    'budget_primary_category_id' => $budgetPrimaryCategory->id,
+            foreach ($categories as $category) {
+                $budgetCategory = $this->repositoryCategory->create([
+                    'budget_classification_id' => $budgetClassification->id,
                     'budget_id' => $budget->id,
-                    'secondary_category_id' => $secondaryCategory['id'],
-                    'percentage' => $secondaryCategory['budget'],
+                    'category_id' => $category['id'],
+                    'percentage' => $category['budget'],
                 ]);
 
-                $specificCategories = $secondaryCategory['children'] ?? [];
+                $subCategories = $category['children'] ?? [];
 
-                foreach ($specificCategories as $specificCategory) {
-                    $this->repositorySpecificCategory->create([
-                        'budget_secondary_category_id' => $budgetSecondaryCategory->id,
+                foreach ($subCategories as $subCategory) {
+                    $this->repositorySubCategory->create([
+                        'budget_category_id' => $budgetCategory->id,
                         'budget_id' => $budget->id,
-                        'specific_category_id' => $specificCategory['id'],
-                        'percentage' => $specificCategory['budget'],
+                        'sub_category_id' => $subCategory['id'],
+                        'percentage' => $subCategory['budget'],
                     ]);
                 }
             }
@@ -112,43 +112,43 @@ class BudgetService
             return [];
         }
         
-        $primaryCategories = $this->repositoryPrimaryCategory->listByBudgetId($budget->id);
-        $primaryCategories = array_map(function ($primaryCategory) {
+        $classifications = $this->repositoryClassification->listByBudgetId($budget->id);
+        $classifications = array_map(function ($classification) {
 
-            $secondaryCategories = $this->repositorySecondaryCategory->listByBudgetPrimaryCategoryId($primaryCategory['id']);
-            $secondaryCategories = array_map(function ($secondaryCategory) {
+            $categories = $this->repositoryCategory->listByBudgetClassificationId($classification['id']);
+            $categories = array_map(function ($category) {
 
-                $specificCategories = $this->repositorySpecificCategory->listByBudgetSecondaryCategoryId($secondaryCategory['id']);
-                $specificCategories = array_map(function ($specificCategory) {
+                $subCategories = $this->repositorySubCategory->listByBudgetCategoryId($category['id']);
+                $subCategories = array_map(function ($subCategory) {
                     return [
-                        'id' => $specificCategory['specific_category']['id'],
-                        'name' => $specificCategory['specific_category']['name'],
-                        'budget' => $specificCategory['percentage'],
+                        'id' => $subCategory['sub_category']['id'],
+                        'name' => $subCategory['sub_category']['name'],
+                        'budget' => $subCategory['percentage'],
                     ];
-                }, $specificCategories);
+                }, $subCategories);
 
                 return [
-                    'id' => $secondaryCategory['secondary_category']['id'],
-                    'name' => $secondaryCategory['secondary_category']['name'],
-                    'budget' => $secondaryCategory['percentage'],
-                    'children' => $specificCategories,
+                    'id' => $category['category']['id'],
+                    'name' => $category['category']['name'],
+                    'budget' => $category['percentage'],
+                    'children' => $subCategories,
                 ];
-            }, $secondaryCategories);
+            }, $categories);
 
             return [
-                'id' => $primaryCategory['primary_category']['id'],
-                'name' => $primaryCategory['primary_category']['name'],
-                'budget' => $primaryCategory['percentage'],
-                'children' => $secondaryCategories,
+                'id' => $classification['classification']['id'],
+                'name' => $classification['classification']['name'],
+                'budget' => $classification['percentage'],
+                'children' => $categories,
             ];
 
-        }, $primaryCategories);
+        }, $classifications);
 
         return [
             'id' => $budget->id,
             'year' => $budget->year,
             'month' => $budget->month,
-            'categories' => $primaryCategories,
+            'categories' => $classifications,
         ];
     }
 }

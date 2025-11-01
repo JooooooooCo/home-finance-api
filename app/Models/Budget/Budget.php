@@ -6,7 +6,7 @@ use App\Models\CostCenter;
 use App\Traits\TenantScoped;
 use App\Traits\TenantAttributeTrait;
 use Illuminate\Database\Eloquent\Model;
-use App\Models\Budget\BudgetPrimaryCategory;
+use App\Models\Budget\BudgetClassification;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Budget extends Model
@@ -26,8 +26,8 @@ class Budget extends Model
     return $this->belongsTo(CostCenter::class);
   }
 
-  public function primaryCategories()
+  public function classifications()
   {
-    return $this->hasMany(BudgetPrimaryCategory::class);
+    return $this->hasMany(BudgetClassification::class);
   }
 }

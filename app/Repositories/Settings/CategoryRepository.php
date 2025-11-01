@@ -2,14 +2,14 @@
 
 namespace App\Repositories\Settings;
 
-use App\Models\Settings\SecondaryCategory;
-use App\Repositories\Settings\Interfacies\SecondaryCategoryRepositoryInterface;
+use App\Models\Settings\Category;
+use App\Repositories\Settings\Interfacies\CategoryRepositoryInterface;
 
-class SecondaryCategoryRepository implements SecondaryCategoryRepositoryInterface
+class CategoryRepository implements CategoryRepositoryInterface
 {
     protected $model;
 
-    public function __construct(SecondaryCategory $model)
+    public function __construct(Category $model)
     {
         $this->model = $model;
     }
@@ -25,17 +25,17 @@ class SecondaryCategoryRepository implements SecondaryCategoryRepositoryInterfac
             ->toArray();
     }
 
-    public function create(array $data): SecondaryCategory
+    public function create(array $data): Category
     {
         return $this->model->create($data);
     }
 
-    public function findById(int $id): SecondaryCategory
+    public function findById(int $id): Category
     {
         return $this->model->findOrFail($id);
     }
 
-    public function update(int $id, array $data): SecondaryCategory
+    public function update(int $id, array $data): Category
     {
         $model = $this->findById($id);
         $model->fill($data)->save();

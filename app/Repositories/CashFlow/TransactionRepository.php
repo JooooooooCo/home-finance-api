@@ -19,9 +19,9 @@ class TransactionRepository implements TransactionRepositoryInterface
     {
         $query = $this->model->with([
             'paymentType:id,name',
-            'primaryCategory:id,name',
-            'secondaryCategory:id,name',
-            'specificCategory:id,name',
+            'classification:id,name',
+            'category:id,name',
+            'subCategory:id,name',
         ]);
 
         $query = $this->applyFilters($query, $filters);
@@ -74,16 +74,16 @@ class TransactionRepository implements TransactionRepositoryInterface
             $query->whereIn('status', $filters['paymentStatuses']);
         }
 
-        if (!empty($filters['primaryCategoryId'])) {
-            $query->where('primary_category_id', $filters['primaryCategoryId']);
+        if (!empty($filters['classificationId'])) {
+            $query->where('classification_id', $filters['classificationId']);
         }
 
-        if (!empty($filters['secondaryCategoryId'])) {
-            $query->where('secondary_category_id', $filters['secondaryCategoryId']);
+        if (!empty($filters['categoryId'])) {
+            $query->where('category_id', $filters['categoryId']);
         }
 
-        if (!empty($filters['specificCategoryId'])) {
-            $query->where('specific_category_id', $filters['specificCategoryId']);
+        if (!empty($filters['subCategoryId'])) {
+            $query->where('sub_category_id', $filters['subCategoryId']);
         }
 
         if (!empty($filters['description'])) {

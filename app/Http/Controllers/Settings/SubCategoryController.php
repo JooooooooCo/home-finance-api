@@ -4,26 +4,27 @@ namespace App\Http\Controllers\Settings;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use App\Services\Settings\PrimaryCategoryService;
+use App\Services\Settings\SubCategoryService;
 
-class PrimaryCategoryController extends Controller
+class SubCategoryController extends Controller
 {
     protected $service;
 
-    public function __construct(PrimaryCategoryService $service)
+    public function __construct(SubCategoryService $service)
     {
         $this->service = $service;
     }
 
-    public function list()
+    public function list(Request $request)
     {
-        $itens = $this->service->list();
+        $categoryId = $request->get('category-id');
+        $itens = $this->service->list((int) $categoryId);
         return $this->sendResponse($itens, 'entities collection');
     }
 
     public function create(Request $request)
     {
-        $data = $request->validate(['name' => 'required|max:200']);
+        $data = $request->validate(['name' => 'required|max:200', 'category-id' => 'required|max:200']);
         $item = $this->service->create($data);
         return $this->sendResponse($item, 'Success, entity created');
     }
@@ -38,7 +39,7 @@ class PrimaryCategoryController extends Controller
     public function update(Request $request)
     {
         $id = $request->route('id');
-        $data = $request->validate(['name' => 'required|max:200']);
+        $data = $request->validate(['name' => 'required|max:200', 'category-id' => 'required|max:200']);
         $item = $this->service->update($id, $data);
         return $this->sendResponse($item, 'Success, entity updated');
     }

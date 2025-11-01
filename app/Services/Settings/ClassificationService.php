@@ -2,14 +2,14 @@
 
 namespace App\Services\Settings;
 
-use App\Models\Settings\PrimaryCategory;
-use App\Repositories\Settings\Interfacies\PrimaryCategoryRepositoryInterface;
+use App\Models\Settings\Classification;
+use App\Repositories\Settings\Interfacies\ClassificationRepositoryInterface;
 
-class PrimaryCategoryService
+class ClassificationService
 {
     protected $repository;
 
-    public function __construct(PrimaryCategoryRepositoryInterface $repository)
+    public function __construct(ClassificationRepositoryInterface $repository)
     {
         $this->repository = $repository;
     }
@@ -19,17 +19,17 @@ class PrimaryCategoryService
         return $this->repository->getAll();
     }
 
-    public function create(array $data): PrimaryCategory
+    public function create(array $data): Classification
     {
         return $this->repository->create($data);
     }
 
-    public function get(int $id): PrimaryCategory
+    public function get(int $id): Classification
     {
         return $this->repository->findById($id);
     }
 
-    public function update(int $id, array $data): PrimaryCategory
+    public function update(int $id, array $data): Classification
     {
         return $this->repository->update($id, $data);
     }

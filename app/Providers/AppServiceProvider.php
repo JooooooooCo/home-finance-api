@@ -8,17 +8,15 @@ use Illuminate\Support\ServiceProvider;
 use App\Repositories\CostCenterRepository;
 use App\Repositories\CashFlow\TransactionRepository;
 use App\Repositories\Settings\PaymentTypeRepository;
-use App\Repositories\Settings\PrimaryCategoryRepository;
-use App\Repositories\Settings\SpecificCategoryRepository;
-use App\Repositories\Settings\PaymentStatusTypeRepository;
-use App\Repositories\Settings\SecondaryCategoryRepository;
+use App\Repositories\Settings\ClassificationRepository;
+use App\Repositories\Settings\SubCategoryRepository;
+use App\Repositories\Settings\CategoryRepository;
 use App\Repositories\Interfacies\CostCenterRepositoryInterface;
 use App\Repositories\CashFlow\Interfacies\TransactionRepositoryInterface;
 use App\Repositories\Settings\Interfacies\PaymentTypeRepositoryInterface;
-use App\Repositories\Settings\Interfacies\PrimaryCategoryRepositoryInterface;
-use App\Repositories\Settings\Interfacies\SpecificCategoryRepositoryInterface;
-use App\Repositories\Settings\Interfacies\PaymentStatusTypeRepositoryInterface;
-use App\Repositories\Settings\Interfacies\SecondaryCategoryRepositoryInterface;
+use App\Repositories\Settings\Interfacies\ClassificationRepositoryInterface;
+use App\Repositories\Settings\Interfacies\SubCategoryRepositoryInterface;
+use App\Repositories\Settings\Interfacies\CategoryRepositoryInterface;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -31,10 +29,9 @@ class AppServiceProvider extends ServiceProvider
     {
         $this->app->bind(CostCenterRepositoryInterface::class, CostCenterRepository::class);
         $this->app->bind(PaymentTypeRepositoryInterface::class, PaymentTypeRepository::class);
-        $this->app->bind(PaymentStatusTypeRepositoryInterface::class, PaymentStatusTypeRepository::class);
-        $this->app->bind(PrimaryCategoryRepositoryInterface::class, PrimaryCategoryRepository::class);
-        $this->app->bind(SecondaryCategoryRepositoryInterface::class, SecondaryCategoryRepository::class);
-        $this->app->bind(SpecificCategoryRepositoryInterface::class, SpecificCategoryRepository::class);
+        $this->app->bind(ClassificationRepositoryInterface::class, ClassificationRepository::class);
+        $this->app->bind(CategoryRepositoryInterface::class, CategoryRepository::class);
+        $this->app->bind(SubCategoryRepositoryInterface::class, SubCategoryRepository::class);
         $this->app->bind(TransactionRepositoryInterface::class, TransactionRepository::class);
     }
 

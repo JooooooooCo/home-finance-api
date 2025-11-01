@@ -2,14 +2,14 @@
 
 namespace App\Services\Settings;
 
-use App\Models\Settings\SecondaryCategory;
-use App\Repositories\Settings\Interfacies\SecondaryCategoryRepositoryInterface;
+use App\Models\Settings\Category;
+use App\Repositories\Settings\Interfacies\CategoryRepositoryInterface;
 
-class SecondaryCategoryService
+class CategoryService
 {
     protected $repository;
 
-    public function __construct(SecondaryCategoryRepositoryInterface $repository)
+    public function __construct(CategoryRepositoryInterface $repository)
     {
         $this->repository = $repository;
     }
@@ -19,17 +19,17 @@ class SecondaryCategoryService
         return $this->repository->getAll($type);
     }
 
-    public function create(array $data): SecondaryCategory
+    public function create(array $data): Category
     {
         return $this->repository->create($data);
     }
 
-    public function get(int $id): SecondaryCategory
+    public function get(int $id): Category
     {
         return $this->repository->findById($id);
     }
 
-    public function update(int $id, array $data): SecondaryCategory
+    public function update(int $id, array $data): Category
     {
         return $this->repository->update($id, $data);
     }

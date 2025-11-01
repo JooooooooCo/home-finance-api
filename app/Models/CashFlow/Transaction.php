@@ -9,9 +9,9 @@ use App\Traits\TenantScoped;
 use App\Models\Settings\PaymentType;
 use App\Traits\TenantAttributeTrait;
 use Illuminate\Database\Eloquent\Model;
-use App\Models\Settings\PrimaryCategory;
-use App\Models\Settings\SpecificCategory;
-use App\Models\Settings\SecondaryCategory;
+use App\Models\Settings\Classification;
+use App\Models\Settings\SubCategory;
+use App\Models\Settings\Category;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Transaction extends Model
@@ -29,9 +29,9 @@ class Transaction extends Model
     'amount',
     'current_installment',
     'total_installments',
-    'primary_category_id',
-    'secondary_category_id',
-    'specific_category_id',
+    'classification_id',
+    'category_id',
+    'sub_category_id',
     'description',
     'primary_note',
     'secondary_note',
@@ -60,18 +60,18 @@ class Transaction extends Model
   }
 
 
-  public function primaryCategory()
+  public function classification()
   {
-    return $this->belongsTo(PrimaryCategory::class);
+    return $this->belongsTo(Classification::class);
   }
 
-  public function secondaryCategory()
+  public function category()
   {
-    return $this->belongsTo(SecondaryCategory::class);
+    return $this->belongsTo(Category::class);
   }
 
-  public function specificCategory()
+  public function subCategory()
   {
-    return $this->belongsTo(SpecificCategory::class);
+    return $this->belongsTo(SubCategory::class, 'sub_category_id');
   }
 }

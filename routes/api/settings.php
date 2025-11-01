@@ -11,22 +11,22 @@ Route::middleware('auth:api')->group(function () {
         Route::delete('/settings/payment-type/{id}', 'App\Http\Controllers\Settings\PaymentTypeController@delete');
 
 
-        Route::get('/settings/primary-category', 'App\Http\Controllers\Settings\PrimaryCategoryController@list');
-        Route::post('/settings/primary-category', 'App\Http\Controllers\Settings\PrimaryCategoryController@create');
-        Route::get('/settings/primary-category/{id}', 'App\Http\Controllers\Settings\PrimaryCategoryController@get');
-        Route::put('/settings/primary-category/{id}', 'App\Http\Controllers\Settings\PrimaryCategoryController@update');
-        Route::delete('/settings/primary-category/{id}', 'App\Http\Controllers\Settings\PrimaryCategoryController@delete');
+        Route::get('/settings/classification', 'App\Http\Controllers\Settings\ClassificationController@list');
+        Route::post('/settings/classification', 'App\Http\Controllers\Settings\ClassificationController@create');
+        Route::get('/settings/classification/{id}', 'App\Http\Controllers\Settings\ClassificationController@get');
+        Route::put('/settings/classification/{id}', 'App\Http\Controllers\Settings\ClassificationController@update');
+        Route::delete('/settings/classification/{id}', 'App\Http\Controllers\Settings\ClassificationController@delete');
 
-        Route::get('/settings/secondary-category', 'App\Http\Controllers\Settings\SecondaryCategoryController@list');
-        Route::post('/settings/secondary-category', 'App\Http\Controllers\Settings\SecondaryCategoryController@create');
-        Route::get('/settings/secondary-category/{id}', 'App\Http\Controllers\Settings\SecondaryCategoryController@get');
-        Route::put('/settings/secondary-category/{id}', 'App\Http\Controllers\Settings\SecondaryCategoryController@update');
-        Route::delete('/settings/secondary-category/{id}', 'App\Http\Controllers\Settings\SecondaryCategoryController@delete');
+        Route::get('/settings/category', 'App\Http\Controllers\Settings\CategoryController@list');
+        Route::post('/settings/category', 'App\Http\Controllers\Settings\CategoryController@create');
+        Route::get('/settings/category/{id}', 'App\Http\Controllers\Settings\CategoryController@get');
+        Route::put('/settings/category/{id}', 'App\Http\Controllers\Settings\CategoryController@update');
+        Route::delete('/settings/category/{id}', 'App\Http\Controllers\Settings\CategoryController@delete');
 
-        Route::get('/settings/specific-category', 'App\Http\Controllers\Settings\SpecificCategoryController@list');
-        Route::post('/settings/specific-category', 'App\Http\Controllers\Settings\SpecificCategoryController@create');
-        Route::get('/settings/specific-category/{id}', 'App\Http\Controllers\Settings\SpecificCategoryController@get');
-        Route::put('/settings/specific-category/{id}', 'App\Http\Controllers\Settings\SpecificCategoryController@update');
-        Route::delete('/settings/specific-category/{id}', 'App\Http\Controllers\Settings\SpecificCategoryController@delete');
+        Route::get('/settings/sub-category', 'App\Http\Controllers\Settings\SubCategoryController@list');
+        Route::post('/settings/sub-category', 'App\Http\Controllers\Settings\SubCategoryController@create');
+        Route::get('/settings/sub-category/{id}', 'App\Http\Controllers\Settings\SubCategoryController@get');
+        Route::put('/settings/sub-category/{id}', 'App\Http\Controllers\Settings\SubCategoryController@update');
+        Route::delete('/settings/sub-category/{id}', 'App\Http\Controllers\Settings\SubCategoryController@delete');
     });
 });

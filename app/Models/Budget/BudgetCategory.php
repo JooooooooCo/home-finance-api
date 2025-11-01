@@ -6,18 +6,18 @@ use App\Models\CostCenter;
 use App\Traits\TenantScoped;
 use App\Traits\TenantAttributeTrait;
 use Illuminate\Database\Eloquent\Model;
-use App\Models\Settings\SpecificCategory;
+use App\Models\Settings\Category;
 
-class BudgetSpecificCategory extends Model
+class BudgetCategory extends Model
 {
   use TenantAttributeTrait, TenantScoped;
 
-  protected $table = 'budget_specific_categories';
+  protected $table = 'budget_categories';
 
   protected $fillable = [
-    'budget_secondary_category_id',
+    'budget_classification_id',
     'cost_center_id',
-    'specific_category_id',
+    'category_id',
     'percentage',
   ];
   
@@ -26,9 +26,9 @@ class BudgetSpecificCategory extends Model
     return (int) $value;
   }
 
-  public function secondaryCategory()
+  public function classification()
   {
-    return $this->belongsTo(BudgetSecondaryCategory::class, 'budget_secondary_category_id');
+    return $this->belongsTo(BudgetClassification::class, 'budget_classification_id');
   }
 
   public function costCenter()
@@ -36,8 +36,13 @@ class BudgetSpecificCategory extends Model
     return $this->belongsTo(CostCenter::class);
   }
 
-  public function specificCategory()
+  public function category()
   {
-    return $this->belongsTo(SpecificCategory::class);
+    return $this->belongsTo(Category::class);
+  }
+
+  public function subCategories()
+  {
+    return $this->hasMany(BudgetSubCategory::class, 'budget_category_id');
   }
 }

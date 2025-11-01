@@ -6,18 +6,18 @@ use App\Models\CostCenter;
 use App\Traits\TenantScoped;
 use App\Traits\TenantAttributeTrait;
 use Illuminate\Database\Eloquent\Model;
-use App\Models\Settings\PrimaryCategory;
+use App\Models\Settings\Classification;
 
-class BudgetPrimaryCategory extends Model
+class BudgetClassification extends Model
 {
   use TenantAttributeTrait, TenantScoped;
 
-  protected $table = 'budget_primary_categories';
+  protected $table = 'budget_classifications';
   
   protected $fillable = [
     'budget_id',
     'cost_center_id',
-    'primary_category_id',
+    'classification_id',
     'percentage',
   ];
   
@@ -36,13 +36,13 @@ class BudgetPrimaryCategory extends Model
     return $this->belongsTo(CostCenter::class);
   }
 
-  public function primaryCategory()
+  public function classification()
   {
-    return $this->belongsTo(PrimaryCategory::class);
+    return $this->belongsTo(Classification::class);
   }
 
-  public function secondaryCategories()
+  public function categories()
   {
-    return $this->hasMany(BudgetSecondaryCategory::class);
+    return $this->hasMany(BudgetCategory::class, 'budget_classification_id');
   }
 }

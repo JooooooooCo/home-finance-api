@@ -9,15 +9,14 @@ use App\Traits\TenantAttributeTrait;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class SpecificCategory extends Model
+class Classification extends Model
 {
   use SoftDeletes, TenantAttributeTrait, TenantScoped;
 
-  protected $table = 'specific_categories';
+  protected $table = 'classifications';
 
   protected $fillable = [
     'name',
-    'secondary_category_id',
     'cost_center_id',
   ];
 
@@ -26,13 +25,8 @@ class SpecificCategory extends Model
     return $this->belongsTo(CostCenter::class);
   }
 
-  public function secondaryCategory()
-  {
-    return $this->belongsTo(SecondaryCategory::class);
-  }
-
   public function transactions()
   {
-    return $this->hasMany(Transaction::class);
+    return $this->hasMany(Transaction::class, 'classification_id');
   }
 }

@@ -4,13 +4,13 @@ namespace App\Http\Controllers\Settings;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use App\Services\Settings\SecondaryCategoryService;
+use App\Services\Settings\CategoryService;
 
-class SecondaryCategoryController extends Controller
+class CategoryController extends Controller
 {
     protected $service;
 
-    public function __construct(SecondaryCategoryService $service)
+    public function __construct(CategoryService $service)
     {
         $this->service = $service;
     }

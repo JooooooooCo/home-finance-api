@@ -2,18 +2,18 @@
 
 namespace App\Repositories\Budget;
 
-use App\Models\Budget\BudgetPrimaryCategory;
+use App\Models\Budget\BudgetClassification;
 
-class BudgetPrimaryCategoryRepository
+class BudgetClassificationRepository
 {
     protected $model;
 
-    public function __construct(BudgetPrimaryCategory $model)
+    public function __construct(BudgetClassification $model)
     {
         $this->model = $model;
     }
 
-    public function create(array $data): BudgetPrimaryCategory
+    public function create(array $data): BudgetClassification
     {
         return $this->model->create($data);
     }
@@ -21,7 +21,7 @@ class BudgetPrimaryCategoryRepository
     public function listByBudgetId(int $budgetId): array
     {
         return $this->model        
-            ->with('primaryCategory:id,name')
+            ->with('classification:id,name')
             ->where('budget_id', $budgetId)
             ->get()
             ->toArray();
