@@ -3,9 +3,9 @@
 namespace App\Services\CashFlow;
 
 use App\Enums\TransactionType;
+use App\Enums\PaymentStatus;
 use Exception;
 use App\Models\CashFlow\Transaction;
-use App\Models\Settings\PaymentStatusType;
 use App\Repositories\CashFlow\Interfacies\TransactionRepositoryInterface;
 use App\Exports\TransactionExport;
 use Maatwebsite\Excel\Facades\Excel;
@@ -61,7 +61,7 @@ class TransactionService
                 'Id' => $transaction['id'],
                 'Tipo de transação' => $transaction['type'],
                 'Tipo de pagamento' => $transaction['payment_type']['name'] . ' (' . $transaction['payment_type']['id'] . ')',
-                'Status de pagamento' => $transaction['payment_status']['name'] . ' (' . $transaction['payment_status']['id'] . ')',
+                'Status de pagamento' => $transaction['status'],
                 'Data de compra' => $transaction['purchase_date'],
                 'Data de vencimento' => $transaction['due_date'],
                 'Data de pagamento' => $transaction['payment_date'],
@@ -118,7 +118,7 @@ class TransactionService
             if ($transaction['type'] == TransactionType::EXPENSE->value) {
                 $totals['forecast_expense_amount'] += $transaction['amount'];
                 
-                if ($transaction['payment_status_id'] == PaymentStatusType::PAID) {
+                if ($transaction['status'] == PaymentStatus::PAID->value) {
                     $totals['executed_expense_amount'] += $transaction['amount'];
                 }
             }
@@ -126,7 +126,7 @@ class TransactionService
             if ($transaction['type'] == TransactionType::INCOME->value) {
                 $totals['forecast_income_amount'] += $transaction['amount'];
                 
-                if ($transaction['payment_status_id'] == PaymentStatusType::PAID) {
+                if ($transaction['status'] == PaymentStatus::PAID->value) {
                     $totals['executed_income_amount'] += $transaction['amount'];
                 }
             }

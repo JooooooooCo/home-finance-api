@@ -19,7 +19,6 @@ class TransactionRepository implements TransactionRepositoryInterface
     {
         $query = $this->model->with([
             'paymentType:id,name',
-            'paymentStatus:id,name',
             'primaryCategory:id,name',
             'secondaryCategory:id,name',
             'specificCategory:id,name',
@@ -35,31 +34,34 @@ class TransactionRepository implements TransactionRepositoryInterface
         return $query->get()->toArray();
     }
 
+    // TODO: REMOVE "EXECUTED" FROM NAME, AS NOT FILTER ONLY PAID
     public function getHistoryExecutedAmount(String $endDate): array
     {
         return $this->model
-            ->selectRaw('type, payment_status_id, SUM(amount) as amount')
+            ->selectRaw('type, status, SUM(amount) as amount')
             ->where('due_date', '<', $endDate)
             ->groupBy('type')
-            ->groupBy('payment_status_id')
+            ->groupBy('status')
             ->get()
             ->toArray();
     }
 
+    // TODO: REMOVE "EXECUTED" FROM NAME, AS NOT FILTER ONLY PAID
     public function getHistoryExecutedAmountByPaymentType(String $endDate, int $paymentTypeId): array
     {
         return $this->model
-            ->selectRaw('type, payment_status_id, SUM(amount) as amount')
+            ->selectRaw('type, status, SUM(amount) as amount')
             ->where('due_date', '<', $endDate)
             ->where('payment_type_id', $paymentTypeId)
             ->groupBy('type')
-            ->groupBy('payment_status_id')
+            ->groupBy('status')
             ->get()
             ->toArray();
     }
 
     private function applyFilters($query, array $filters)
     {
+        // TODO: CHANGE TYPE TO PLURAL
         if (!empty($filters['type'])) {
             $query->whereIn('type', $filters['type']);
         }
@@ -68,8 +70,8 @@ class TransactionRepository implements TransactionRepositoryInterface
             $query->whereIn('payment_type_id', $filters['paymentTypeIds']);
         }
 
-        if (!empty($filters['paymentStatusIds'])) {
-            $query->whereIn('payment_status_id', $filters['paymentStatusIds']);
+        if (!empty($filters['paymentStatuses'])) {
+            $query->whereIn('status', $filters['paymentStatuses']);
         }
 
         if (!empty($filters['primaryCategoryId'])) {

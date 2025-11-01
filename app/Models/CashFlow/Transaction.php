@@ -3,6 +3,7 @@
 namespace App\Models\CashFlow;
 
 use App\Enums\TransactionType;
+use App\Enums\PaymentStatus;
 use App\Models\CostCenter;
 use App\Traits\TenantScoped;
 use App\Models\Settings\PaymentType;
@@ -10,7 +11,6 @@ use App\Traits\TenantAttributeTrait;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\Settings\PrimaryCategory;
 use App\Models\Settings\SpecificCategory;
-use App\Models\Settings\PaymentStatusType;
 use App\Models\Settings\SecondaryCategory;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
@@ -22,7 +22,7 @@ class Transaction extends Model
 
   protected $fillable = [
     'payment_type_id',
-    'payment_status_id',
+    'status',
     'purchase_date',
     'due_date',
     'payment_date',
@@ -46,6 +46,7 @@ class Transaction extends Model
 
   protected $casts = [
     'type' => TransactionType::class,
+    'status' => PaymentStatus::class,
   ];
 
   public function costCenter()
@@ -58,10 +59,6 @@ class Transaction extends Model
     return $this->belongsTo(PaymentType::class);
   }
 
-  public function paymentStatus()
-  {
-    return $this->belongsTo(PaymentStatusType::class, 'payment_status_id');
-  }
 
   public function primaryCategory()
   {

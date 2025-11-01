@@ -10,11 +10,6 @@ Route::middleware('auth:api')->group(function () {
         Route::put('/settings/payment-type/{id}', 'App\Http\Controllers\Settings\PaymentTypeController@update');
         Route::delete('/settings/payment-type/{id}', 'App\Http\Controllers\Settings\PaymentTypeController@delete');
 
-        Route::get('/settings/payment-status-type', 'App\Http\Controllers\Settings\PaymentStatusTypeController@list');
-        Route::post('/settings/payment-status-type', 'App\Http\Controllers\Settings\PaymentStatusTypeController@create');
-        Route::get('/settings/payment-status-type/{id}', 'App\Http\Controllers\Settings\PaymentStatusTypeController@get');
-        Route::put('/settings/payment-status-type/{id}', 'App\Http\Controllers\Settings\PaymentStatusTypeController@update');
-        Route::delete('/settings/payment-status-type/{id}', 'App\Http\Controllers\Settings\PaymentStatusTypeController@delete');
 
         Route::get('/settings/primary-category', 'App\Http\Controllers\Settings\PrimaryCategoryController@list');
         Route::post('/settings/primary-category', 'App\Http\Controllers\Settings\PrimaryCategoryController@create');
