@@ -177,4 +177,25 @@ class TransactionRepository implements TransactionRepositoryInterface
             ->get()
             ->toArray();
     }
+
+    // TODO: MOVE TO CORRECT REPOSITORIES
+    public function getPaymentTypes(): array
+    {
+        return \App\Models\Settings\PaymentType::select('id', 'name')->get()->toArray();
+    }
+
+    public function getClassifications(): array
+    {
+        return \App\Models\Settings\Classification::select('id', 'name')->get()->toArray();
+    }
+
+    public function getCategories(): array
+    {
+        return \App\Models\Settings\Category::select('id', 'name')->get()->toArray();
+    }
+
+    public function getSubCategories(): array
+    {
+        return \App\Models\Settings\SubCategory::select('id', 'name', 'category_id')->get()->toArray();
+    }
 }

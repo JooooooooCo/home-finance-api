@@ -56,7 +56,7 @@ class TransactionService
     private function mapTransactionsToExport(array $transactions)
     {
         $mappedTransactions = [];
-        foreach($transactions as $transaction) {
+        foreach ($transactions as $transaction) {
             $mappedTransactions[] = [
                 'Id' => $transaction['id'],
                 'Tipo de transação' => $transaction['type'],
@@ -117,7 +117,7 @@ class TransactionService
         foreach ($transactions as $transaction) {
             if ($transaction['type'] == TransactionType::EXPENSE->value) {
                 $totals['forecast_expense_amount'] += $transaction['amount'];
-                
+
                 if ($transaction['status'] == PaymentStatus::PAID->value) {
                     $totals['executed_expense_amount'] += $transaction['amount'];
                 }
@@ -125,7 +125,7 @@ class TransactionService
 
             if ($transaction['type'] == TransactionType::INCOME->value) {
                 $totals['forecast_income_amount'] += $transaction['amount'];
-                
+
                 if ($transaction['status'] == PaymentStatus::PAID->value) {
                     $totals['executed_income_amount'] += $transaction['amount'];
                 }
@@ -161,7 +161,7 @@ class TransactionService
     }
 
     public function createBatch(array $transactions): array
-    {        
+    {
         return array_map(function ($item) {
             return $this->repository->create($item);
         }, $transactions);
@@ -180,6 +180,26 @@ class TransactionService
     public function delete(int $id): void
     {
         $this->repository->delete($id);
+    }
+
+    public function aiSuggest(array $data): array
+    {
+        if (!isset($data['description']) || empty(trim($data['description']))) {
+            throw new Exception("Description is required", 422);
+        }
+
+        $paymentTypes = $this->repository->getPaymentTypes();
+        $classifications = $this->repository->getClassifications();
+        $categories = $this->repository->getCategories();
+        $subCategories = $this->repository->getSubCategories();
+
+        $prompt = $this->buildAIPrompt($data['description'], $paymentTypes, $classifications, $categories, $subCategories);
+
+        $aiResponse = $this->callOpenAI($prompt);
+        $suggestedTransaction = $this->parseAIResponse($aiResponse, $paymentTypes);
+        $suggestedTransaction = $this->addNamesToTransaction($suggestedTransaction, $paymentTypes, $classifications, $categories, $subCategories);
+
+        return $suggestedTransaction;
     }
 
     public function getGeneralBalance(array $filters): array
@@ -257,5 +277,138 @@ class TransactionService
         }
 
         return $balances;
+    }
+
+    private function buildAIPrompt(string $description, array $paymentTypes, array $classifications, array $categories, array $subCategories): string
+    {
+        $typeExpense = TransactionType::EXPENSE->value;
+        $typeIncome = TransactionType::INCOME->value;
+        $statusPaid = PaymentStatus::PAID->value;
+        $statusPending = PaymentStatus::PENDING->value;
+        $currentDate = date('Y-m-d');
+        $currentYear = date('Y');
+        $paymentTypesList = collect($paymentTypes)->map(fn($pt) => "{$pt['id']}: {$pt['name']}")->join(', ');
+        $classificationsList = collect($classifications)->map(fn($c) => "{$c['id']}: {$c['name']}")->join(', ');
+        $unifiedCategoriesList = '[ ';
+        foreach ($categories as $category) {
+            $unifiedCategoriesList .= "{$category['id']}: {$category['name']} (sub-categorias: ";
+            $filteredSubCategories = collect($subCategories)->where('category_id', $category['id']);
+            foreach ($filteredSubCategories as $subCategory) {
+                $unifiedCategoriesList .= " {$subCategory['id']}: {$subCategory['name']}";
+            }
+            $unifiedCategoriesList .= "), ";
+        }
+        $unifiedCategoriesList .= ' ]';
+
+        return "Você é um especialista em análise de transações financeiras.
+        Sua tarefa é analisar a descrição fornecida e **extrair o máximo de informações possíveis** para preencher o objeto JSON.
+
+        **Descrição da Transação Original:** '{$description}'
+        
+        ---
+        
+        **REGRAS DE EXTRAÇÃO E FORMATO:**
+        * **SAÍDA:** Retorne **APENAS** um objeto JSON válido. Não inclua texto explicativo, saudações ou código adicional.
+        * **VALORES PADRÃO:** **NÃO** utilize valores padrão (como a data atual ou 0.00). 
+        * **Omita o campo do JSON** se o valor for ambíguo ou não puder ser determinado.
+        * **type:** Defina o tipo da transação entre {$typeExpense} OU {$typeIncome}. Se não conseguir, considere como {$typeExpense}
+        * **payment_type_id:** Defina o ID dentro da lista fornecida: {$paymentTypesList}
+        * **status:** Defina o status entre {$statusPaid} OU {$statusPending}. Se não conseguir, considere como {$statusPaid}
+        * **purchase_date, due_date, payment_date:** Extraia as datas no formato `YYYY-MM-DD`. Se houver apenas uma data, assuma que é a `purchase_date`. Se houver mais de uma data, considere a mais antiga como `purchase_date`, a seguinte como `due_date` e mais recente como `payment_date`. Se o ano não estiver explícito, considere como {$currentYear}. Se não conseguir inferir a data de compra, considere como {$currentDate}.
+        * **amount, total_installments: Se existir somente um valor numérico na descrição, use-o como o valor de `amount`. Se houver mais de um valor numérico, do tipo inteiro, identifique qual deles é o `amount` e qual é o `total_installments` (considerando que as parcelas são mensais).
+        * **description:** A descrição deve ser o **texto original, LIMPO de quaisquer informações que foram extraídas para outros campos** (como datas, valores, ou menções diretas a tipos/status de pagamento). O objetivo é que sobre apenas o **que foi comprado/pago**.
+        * **classification_id:** Com base na descrição da transação, escolha a classificação mais adequada entre as opções disponíveis (use somente o ID): {$classificationsList}
+        * **category_id e sub_category_id:** Com base na descrição da transação, escolha a categoria e subcategoria mais adequadas entre as opções disponíveis (use somente os IDs). As subcategorias estão listadas entre parenteses após suas respectivas categorias: {$unifiedCategoriesList}
+        
+        ---
+
+        **ESTRUTURA JSON ESPERADA (OMITA CAMPOS NÃO EXTRAÍDOS):**
+        ```json
+        {
+          \"type\": \"string\",
+          \"payment_type_id\": id,
+          \"status\": \"string\",
+          \"purchase_date\": \"YYYY-MM-DD\",
+          \"due_date\": \"YYYY-MM-DD\",
+          \"payment_date\": \"YYYY-MM-DD\",
+          \"amount\": 0.00,
+          \"total_installments\": 1,
+          \"classification_id\": id,
+          \"category_id\": id,
+          \"sub_category_id\": id,
+          \"description\": \"string\"
+        }
+        ```
+        
+        **NÃO INCLUA NADA ALÉM DO JSON SOLICITADO.**";
+    }
+
+    private function callOpenAI(string $prompt): string
+    {
+        $client = new \GuzzleHttp\Client();
+        $response = $client->post('https://api.openai.com/v1/responses', [
+            'headers' => [
+                'Authorization' => 'Bearer ' . env('OPENAI_API_KEY'),
+                'Content-Type' => 'application/json',
+            ],
+            'json' => [
+                'model' => 'gpt-5-nano',
+                'reasoning' => [ 'effort' => 'minimal' ],
+                'input' => $prompt
+            ],
+        ]);
+
+        $result = '';
+        $data = json_decode($response->getBody(), true);
+        foreach ($data['output'] as $output) {
+            if (isset($output['content']) && !empty($output['content'])) {
+                foreach ($output['content'] as $content) {
+                    if (isset($content['type']) && $content['type'] === 'output_text' && isset($content['text'])) {
+                        $result = $content['text'];
+                    }
+                }
+            }
+        }
+        return $result;
+    }
+
+    private function parseAIResponse(string $aiResponse, array $paymentTypes): array
+    {
+        $parsed = json_decode($aiResponse, true);
+        if (json_last_error() !== JSON_ERROR_NONE) {
+            throw new Exception("Invalid AI response format", 422);
+        }
+
+        $requiredFields = ['classification_id', 'category_id', 'sub_category_id', 'description'];
+        foreach ($requiredFields as $field) {
+            if (!isset($parsed[$field])) {
+                throw new Exception("Please provide more details", 422);
+            }
+        }
+
+        $parsed['type'] = $parsed['type'] ?? TransactionType::EXPENSE->value;
+        $parsed['amount'] = $parsed['amount'] ?? 0;
+        $parsed['payment_type_id'] = $parsed['payment_type_id'] ?? $paymentTypes[0]['id'];
+        $parsed['purchase_date'] = $parsed['purchase_date'] ?? date('Y-m-d');
+        $parsed['current_installment'] = 1;
+        $parsed['total_installments'] = $parsed['total_installments'] ?? 1;
+        $parsed['status'] = $parsed['status'] ?? PaymentStatus::PENDING->value;
+        $parsed['is_real'] = 1;
+        $parsed['is_reconciled'] = 0;
+        $parsed['primary_note'] = '';
+        $parsed['secondary_note'] = '';
+        $parsed['spending_average'] = '';
+
+        return $parsed;
+    }
+
+    private function addNamesToTransaction(array $transaction, array $paymentTypes, array $classifications, array $categories, array $subCategories): array
+    {
+        $transaction['payment_type_name'] = collect($paymentTypes)->firstWhere('id', $transaction['payment_type_id'])['name'] ?? '';
+        $transaction['classification_name'] = collect($classifications)->firstWhere('id', $transaction['classification_id'])['name'] ?? '';
+        $transaction['category_name'] = collect($categories)->firstWhere('id', $transaction['category_id'])['name'] ?? '';
+        $transaction['sub_category_name'] = collect($subCategories)->firstWhere('id', $transaction['sub_category_id'])['name'] ?? '';
+
+        return $transaction;
     }
 }
