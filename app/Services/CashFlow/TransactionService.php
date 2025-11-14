@@ -362,7 +362,14 @@ class TransactionService
                 'Content-Type' => 'application/json',
             ],
             'json' => [
+                // 'model' => 'gpt-5-nano',
+                // 'reasoning' => [ 'effort' => 'minimal' ],
                 'model' => 'gpt-4.1-mini',
+                'text' => (object) [
+                    'format' => (object) [
+                        'type' => 'json_object'
+                    ]
+                ],
                 'reasoning' => (object) [],
                 'tools' => [],
                 'temperature' => 1,
