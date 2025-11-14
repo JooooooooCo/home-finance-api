@@ -189,13 +189,16 @@ class TransactionRepository implements TransactionRepositoryInterface
         return \App\Models\Settings\Classification::select('id', 'name')->get()->toArray();
     }
 
-    public function getCategories(): array
+    public function getCategoriesByType(string $type): array
     {
-        return \App\Models\Settings\Category::select('id', 'name')->get()->toArray();
+        return \App\Models\Settings\Category::select('id', 'name')->where('type', $type)->get()->toArray();
     }
 
-    public function getSubCategories(): array
+    public function getSubCategoriesByCategoryIds(array $categoryIds): array
     {
-        return \App\Models\Settings\SubCategory::select('id', 'name', 'category_id')->get()->toArray();
+        return \App\Models\Settings\SubCategory::select('id', 'name', 'category_id')
+            ->whereIn('category_id', $categoryIds)
+            ->get()
+            ->toArray();
     }
 }

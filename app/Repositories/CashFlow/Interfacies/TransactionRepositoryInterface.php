@@ -18,6 +18,6 @@ interface TransactionRepositoryInterface
   public function delete(int $id): bool|null;
   public function getPaymentTypes(): array;
   public function getClassifications(): array;
-  public function getCategories(): array;
-  public function getSubCategories(): array;
+  public function getCategoriesByType(string $type): array;
+  public function getSubCategoriesByCategoryIds(array $categoryIds): array;
 }
