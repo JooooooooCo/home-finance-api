@@ -206,7 +206,7 @@ class TransactionService
         $prompt = $this->buildAIPrompt($paymentTypes, $classifications, $categories, $subCategories);
 
         $aiResponse = $this->callOpenAI($prompt, $data['description']);
-        $suggestedTransaction = $this->parseAIResponse($aiResponse, $data['transactionType'], $paymentTypes);
+        $suggestedTransaction = $this->parseAIResponse($aiResponse, $data['description'], $paymentTypes);
         $suggestedTransaction = $this->addNamesToTransaction($suggestedTransaction, $paymentTypes, $classifications, $categories, $subCategories);
 
         return $suggestedTransaction;
@@ -418,22 +418,18 @@ class TransactionService
         return $result;
     }
 
-    private function parseAIResponse(string $aiResponse, string $transactionType, array $paymentTypes): array
+    private function parseAIResponse(string $aiResponse, string $description, array $paymentTypes): array
     {
         $parsed = json_decode($aiResponse, true);
         if (json_last_error() !== JSON_ERROR_NONE) {
             throw new Exception("Invalid AI response format", 422);
         }
 
-        $requiredFields = ['classification_id', 'category_id', 'sub_category_id', 'description'];
-        foreach ($requiredFields as $field) {
-            if (!isset($parsed[$field])) {
-                throw new Exception("Please provide more details", 422);
-            }
-        }
-
-        $parsed['type'] = $transactionType;
-        $parsed['amount'] = $parsed['amount'] ?? 0;
+        $parsed['amount'] = $parsed['amount'] ?? null;
+        $parsed['description'] = $parsed['description'] ?? $description;
+        $parsed['classification_id'] = $parsed['classification_id'] ?? null;
+        $parsed['category_id'] = $parsed['category_id'] ?? null;
+        $parsed['sub_category_id'] = $parsed['sub_category_id'] ?? null;
         $parsed['payment_type_id'] = $parsed['payment_type_id'] ?? $paymentTypes[0]['id'];
         $parsed['purchase_date'] = $parsed['purchase_date'] ?? date('Y-m-d');
         $parsed['current_installment'] = 1;
