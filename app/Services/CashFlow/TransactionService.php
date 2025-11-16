@@ -207,6 +207,7 @@ class TransactionService
 
         $aiResponse = $this->callOpenAI($prompt, $data['description']);
         $suggestedTransaction = $this->parseAIResponse($aiResponse, $data['description']);
+        $suggestedTransaction = $this->addNamesToTransaction($suggestedTransaction, $classifications, $categories, $subCategories);
 
         return $suggestedTransaction;
     }
@@ -430,5 +431,14 @@ class TransactionService
         $parsed['spending_average'] = '';
 
         return $parsed;
+    }
+
+    private function addNamesToTransaction(array $transaction, array $classifications, array $categories, array $subCategories): array
+    {
+        $transaction['classification_name'] = collect($classifications)->firstWhere('id', $transaction['classification_id'])['name'] ?? '';
+        $transaction['category_name'] = collect($categories)->firstWhere('id', $transaction['category_id'])['name'] ?? '';
+        $transaction['sub_category_name'] = collect($subCategories)->firstWhere('id', $transaction['sub_category_id'])['name'] ?? '';
+
+        return $transaction;
     }
 }
