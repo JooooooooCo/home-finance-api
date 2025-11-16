@@ -197,13 +197,12 @@ class TransactionService
             throw new Exception("Invalid transaction type", 422);
         }
 
-        $paymentTypes = $this->repository->getPaymentTypes();
         $classifications = $this->repository->getClassifications();
         $categories = $this->repository->getCategoriesByType($data['transactionType']);
         $categoryIds = array_column($categories, 'id');
         $subCategories = $this->repository->getSubCategoriesByCategoryIds($categoryIds);
 
-        $prompt = $this->buildAIPrompt($paymentTypes, $classifications, $categories, $subCategories);
+        $prompt = $this->buildAIPrompt($classifications, $categories, $subCategories);
 
         $aiResponse = $this->callOpenAI($prompt, $data['description']);
         $suggestedTransaction = $this->parseAIResponse($aiResponse, $data['description']);
@@ -289,13 +288,8 @@ class TransactionService
         return $balances;
     }
 
-    private function buildAIPrompt(array $paymentTypes, array $classifications, array $categories, array $subCategories): string
+    private function buildAIPrompt(array $classifications, array $categories, array $subCategories): string
     {
-        $statusPaid = PaymentStatus::PAID->value;
-        $statusPending = PaymentStatus::PENDING->value;
-        $currentDate = date('Y-m-d');
-        $currentYear = date('Y');
-        $paymentTypesList = collect($paymentTypes)->map(fn($pt) => "{$pt['id']}: {$pt['name']}")->join(', ');
         $classificationsList = collect($classifications)->map(fn($c) => "{$c['id']}: {$c['name']}")->join(', ');
         $unifiedCategoriesList = '[ ';
         foreach ($categories as $category) {

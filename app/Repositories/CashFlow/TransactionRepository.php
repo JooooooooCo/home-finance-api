@@ -179,11 +179,6 @@ class TransactionRepository implements TransactionRepositoryInterface
     }
 
     // TODO: MOVE TO CORRECT REPOSITORIES
-    public function getPaymentTypes(): array
-    {
-        return \App\Models\Settings\PaymentType::select('id', 'name')->get()->toArray();
-    }
-
     public function getClassifications(): array
     {
         return \App\Models\Settings\Classification::select('id', 'name')->get()->toArray();

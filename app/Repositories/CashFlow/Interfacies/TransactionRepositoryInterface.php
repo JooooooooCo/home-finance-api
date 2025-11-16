@@ -16,7 +16,6 @@ interface TransactionRepositoryInterface
   public function findById(int $id):? Transaction;
   public function update(int $id, array $data): Transaction;
   public function delete(int $id): bool|null;
-  public function getPaymentTypes(): array;
   public function getClassifications(): array;
   public function getCategoriesByType(string $type): array;
   public function getSubCategoriesByCategoryIds(array $categoryIds): array;
