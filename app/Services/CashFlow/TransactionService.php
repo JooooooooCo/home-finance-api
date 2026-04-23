@@ -349,7 +349,7 @@ class TransactionService
             'json' => [
                 // 'model' => 'gpt-5-nano',
                 // 'reasoning' => [ 'effort' => 'minimal' ],
-                'model' => 'gpt-4.1-mini',
+                'model' => env('OPENAI_MODEL'),
                 'text' => (object) [
                     'format' => (object) [
                         'type' => 'json_object'
@@ -388,7 +388,7 @@ class TransactionService
         // $end = microtime(true);
         // $durationApiResponse = number_format(($end - $start), 4);
         // print_r($durationApiResponse);
-        
+
         $result = '';
         $data = json_decode($response->getBody(), true);
         foreach ($data['output'] as $output) {
