@@ -341,66 +341,38 @@ class TransactionService
     {
         $client = new \GuzzleHttp\Client();
         // $start = microtime(true);
-        $response = $client->post('https://api.openai.com/v1/responses', [
+        $response = $client->post('https://openrouter.ai/api/v1/chat/completions', [
             'headers' => [
                 'Authorization' => 'Bearer ' . env('OPENAI_API_KEY'),
                 'Content-Type' => 'application/json',
             ],
             'json' => [
-                // 'model' => 'gpt-5-nano',
-                // 'reasoning' => [ 'effort' => 'minimal' ],
                 'model' => env('OPENAI_MODEL'),
-                'text' => (object) [
-                    'format' => (object) [
-                        'type' => 'json_object'
-                    ]
+                'response_format' => [
+                    'type' => 'json_object',
                 ],
-                'reasoning' => (object) [],
-                'tools' => [],
                 'temperature' => 1,
-                'max_output_tokens' => 2048,
+                'max_tokens' => 2048,
                 'top_p' => 1,
-                'store' => false,
-                'input' => [
-                    (object) [
+                'messages' => [
+                    [
                         'role' => 'system',
-                        'content' => [
-                            (object) [
-                                'type' => 'input_text',
-                                'text' => $prompt
-                            ]
-                        ],
-
+                        'content' => $prompt,
                     ],
-                    (object) [
+                    [
                         'role' => 'user',
-                        'content' => [
-                            (object) [
-                                'type' => 'input_text',
-                                'text' => $description
-                            ]
-                        ],
-
+                        'content' => $description,
                     ],
-                ]
+                ],
             ],
         ]);
         // $end = microtime(true);
         // $durationApiResponse = number_format(($end - $start), 4);
         // print_r($durationApiResponse);
 
-        $result = '';
         $data = json_decode($response->getBody(), true);
-        foreach ($data['output'] as $output) {
-            if (isset($output['content']) && !empty($output['content'])) {
-                foreach ($output['content'] as $content) {
-                    if (isset($content['type']) && $content['type'] === 'output_text' && isset($content['text'])) {
-                        $result = $content['text'];
-                    }
-                }
-            }
-        }
-        return $result;
+
+        return $data['choices'][0]['message']['content'] ?? '';
     }
 
     private function parseAIResponse(string $aiResponse, string $description): array
