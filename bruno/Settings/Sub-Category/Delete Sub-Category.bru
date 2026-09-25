@@ -1,0 +1,20 @@
+meta {
+  name: Delete Sub-Category
+  type: http
+  seq: 5
+}
+
+delete {
+  url: {{baseUrl}}/api/settings/sub-category/1
+  body: none
+  auth: bearer
+}
+
+headers {
+  Accept: application/json
+  X-Tenant-Id: {{tenantId}}
+}
+
+auth:bearer {
+  token: {{accessToken}}
+}

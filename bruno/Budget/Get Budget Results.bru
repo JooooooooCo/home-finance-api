@@ -1,0 +1,25 @@
+meta {
+  name: Get Budget Results
+  type: http
+  seq: 4
+}
+
+get {
+  url: {{baseUrl}}/api/budget/results
+  body: none
+  auth: bearer
+}
+
+headers {
+  Accept: application/json
+  X-Tenant-Id: {{tenantId}}
+}
+
+query {
+  year: 2024
+  month: 1
+}
+
+auth:bearer {
+  token: {{accessToken}}
+}

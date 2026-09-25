@@ -1,0 +1,28 @@
+meta {
+  name: Create Sub-Category
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{baseUrl}}/api/settings/sub-category
+  body: json
+  auth: bearer
+}
+
+headers {
+  Content-Type: application/json
+  Accept: application/json
+  X-Tenant-Id: {{tenantId}}
+}
+
+auth:bearer {
+  token: {{accessToken}}
+}
+
+body:json {
+  {
+    "name": "Restaurante",
+    "category-id": 1
+  }
+}

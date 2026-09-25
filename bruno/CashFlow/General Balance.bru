@@ -1,0 +1,25 @@
+meta {
+  name: General Balance
+  type: http
+  seq: 2
+}
+
+get {
+  url: {{baseUrl}}/api/cashflow/transaction/general-balance
+  body: none
+  auth: bearer
+}
+
+headers {
+  Accept: application/json
+  X-Tenant-Id: {{tenantId}}
+}
+
+query {
+  dueDateRange[]: 2024-01-01
+  dueDateRange[]: 2024-12-31
+}
+
+auth:bearer {
+  token: {{accessToken}}
+}

@@ -1,0 +1,27 @@
+meta {
+  name: Create Payment Type
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{baseUrl}}/api/settings/payment-type
+  body: json
+  auth: bearer
+}
+
+headers {
+  Content-Type: application/json
+  Accept: application/json
+  X-Tenant-Id: {{tenantId}}
+}
+
+auth:bearer {
+  token: {{accessToken}}
+}
+
+body:json {
+  {
+    "name": "Cartão de Crédito"
+  }
+}

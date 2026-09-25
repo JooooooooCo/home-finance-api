@@ -1,0 +1,27 @@
+meta {
+  name: Create Classification
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{baseUrl}}/api/settings/classification
+  body: json
+  auth: bearer
+}
+
+headers {
+  Content-Type: application/json
+  Accept: application/json
+  X-Tenant-Id: {{tenantId}}
+}
+
+auth:bearer {
+  token: {{accessToken}}
+}
+
+body:json {
+  {
+    "name": "Fixo"
+  }
+}

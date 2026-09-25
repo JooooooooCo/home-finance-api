@@ -1,0 +1,24 @@
+meta {
+  name: List Sub-Categories
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{baseUrl}}/api/settings/sub-category
+  body: none
+  auth: bearer
+}
+
+headers {
+  Accept: application/json
+  X-Tenant-Id: {{tenantId}}
+}
+
+query {
+  category-id: 1
+}
+
+auth:bearer {
+  token: {{accessToken}}
+}

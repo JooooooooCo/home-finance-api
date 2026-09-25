@@ -1,0 +1,26 @@
+meta {
+  name: Create Cost Center
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{baseUrl}}/api/cost-center
+  body: json
+  auth: bearer
+}
+
+headers {
+  Content-Type: application/json
+  Accept: application/json
+}
+
+auth:bearer {
+  token: {{accessToken}}
+}
+
+body:json {
+  {
+    "name": "Casa"
+  }
+}

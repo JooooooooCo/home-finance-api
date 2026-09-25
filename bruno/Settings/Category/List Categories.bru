@@ -1,0 +1,24 @@
+meta {
+  name: List Categories
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{baseUrl}}/api/settings/category
+  body: none
+  auth: bearer
+}
+
+headers {
+  Accept: application/json
+  X-Tenant-Id: {{tenantId}}
+}
+
+query {
+  ~type: expense
+}
+
+auth:bearer {
+  token: {{accessToken}}
+}

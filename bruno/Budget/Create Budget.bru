@@ -1,0 +1,46 @@
+meta {
+  name: Create Budget
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{baseUrl}}/api/budget
+  body: json
+  auth: bearer
+}
+
+headers {
+  Content-Type: application/json
+  Accept: application/json
+  X-Tenant-Id: {{tenantId}}
+}
+
+auth:bearer {
+  token: {{accessToken}}
+}
+
+body:json {
+  {
+    "year": 2024,
+    "month": 1,
+    "categories": [
+      {
+        "id": 1,
+        "budget": 50.0,
+        "children": [
+          {
+            "id": 10,
+            "budget": 60.0,
+            "children": [
+              {
+                "id": 100,
+                "budget": 100.0
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}

@@ -1,0 +1,40 @@
+meta {
+  name: List Transactions
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{baseUrl}}/api/cashflow/transaction
+  body: none
+  auth: bearer
+}
+
+headers {
+  Accept: application/json
+  X-Tenant-Id: {{tenantId}}
+}
+
+query {
+  ~type[]: expense
+  ~paymentTypeIds[]: 1
+  ~paymentStatuses[]: paid
+  ~classificationId: 1
+  ~categoryId: 1
+  ~subCategoryId: 1
+  ~description: mercado
+  ~amountMin: 0
+  ~amountMax: 1000
+  ~dueDateRange[]: 2024-01-01
+  ~dueDateRange[]: 2024-12-31
+  ~paymentDateRange[]: 2024-01-01
+  ~paymentDateRange[]: 2024-12-31
+  ~purchaseDateRange[]: 2024-01-01
+  ~purchaseDateRange[]: 2024-12-31
+  ~reconciled: 1
+  ~notReconciled: 0
+}
+
+auth:bearer {
+  token: {{accessToken}}
+}

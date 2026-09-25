@@ -1,0 +1,28 @@
+meta {
+  name: AI Suggest
+  type: http
+  seq: 7
+}
+
+post {
+  url: {{baseUrl}}/api/cashflow/transaction/ai-suggest
+  body: json
+  auth: bearer
+}
+
+headers {
+  Content-Type: application/json
+  Accept: application/json
+  X-Tenant-Id: {{tenantId}}
+}
+
+auth:bearer {
+  token: {{accessToken}}
+}
+
+body:json {
+  {
+    "description": "Compra no supermercado",
+    "transactionType": "expense"
+  }
+}

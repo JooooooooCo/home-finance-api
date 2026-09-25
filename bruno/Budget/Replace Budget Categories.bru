@@ -1,0 +1,49 @@
+meta {
+  name: Replace Budget Categories
+  type: http
+  seq: 3
+}
+
+put {
+  url: {{baseUrl}}/api/budget/1/categories
+  body: json
+  auth: bearer
+}
+
+headers {
+  Content-Type: application/json
+  Accept: application/json
+  X-Tenant-Id: {{tenantId}}
+}
+
+auth:bearer {
+  token: {{accessToken}}
+}
+
+body:json {
+  {
+    "categories": [
+      {
+        "id": 1,
+        "budget": 70.0,
+        "children": [
+          {
+            "id": 10,
+            "budget": 80.0,
+            "children": [
+              {
+                "id": 100,
+                "budget": 100.0
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": 2,
+        "budget": 30.0,
+        "children": []
+      }
+    ]
+  }
+}

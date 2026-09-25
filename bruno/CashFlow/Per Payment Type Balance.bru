@@ -1,0 +1,26 @@
+meta {
+  name: Per Payment Type Balance
+  type: http
+  seq: 3
+}
+
+get {
+  url: {{baseUrl}}/api/cashflow/transaction/per-payment-type-balance
+  body: none
+  auth: bearer
+}
+
+headers {
+  Accept: application/json
+  X-Tenant-Id: {{tenantId}}
+}
+
+query {
+  dueDateRange[]: 2024-01-01
+  dueDateRange[]: 2024-12-31
+  paymentTypeId: 1
+}
+
+auth:bearer {
+  token: {{accessToken}}
+}

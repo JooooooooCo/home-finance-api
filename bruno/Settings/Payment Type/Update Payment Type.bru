@@ -1,0 +1,27 @@
+meta {
+  name: Update Payment Type
+  type: http
+  seq: 4
+}
+
+put {
+  url: {{baseUrl}}/api/settings/payment-type/1
+  body: json
+  auth: bearer
+}
+
+headers {
+  Content-Type: application/json
+  Accept: application/json
+  X-Tenant-Id: {{tenantId}}
+}
+
+auth:bearer {
+  token: {{accessToken}}
+}
+
+body:json {
+  {
+    "name": "Cartão de Débito"
+  }
+}

@@ -1,0 +1,27 @@
+meta {
+  name: Update Classification
+  type: http
+  seq: 4
+}
+
+put {
+  url: {{baseUrl}}/api/settings/classification/1
+  body: json
+  auth: bearer
+}
+
+headers {
+  Content-Type: application/json
+  Accept: application/json
+  X-Tenant-Id: {{tenantId}}
+}
+
+auth:bearer {
+  token: {{accessToken}}
+}
+
+body:json {
+  {
+    "name": "Variável"
+  }
+}

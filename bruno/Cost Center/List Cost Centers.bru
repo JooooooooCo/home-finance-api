@@ -1,0 +1,19 @@
+meta {
+  name: List Cost Centers
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{baseUrl}}/api/cost-center
+  body: none
+  auth: bearer
+}
+
+headers {
+  Accept: application/json
+}
+
+auth:bearer {
+  token: {{accessToken}}
+}

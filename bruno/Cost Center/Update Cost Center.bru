@@ -1,0 +1,26 @@
+meta {
+  name: Update Cost Center
+  type: http
+  seq: 4
+}
+
+put {
+  url: {{baseUrl}}/api/cost-center/1
+  body: json
+  auth: bearer
+}
+
+headers {
+  Content-Type: application/json
+  Accept: application/json
+}
+
+auth:bearer {
+  token: {{accessToken}}
+}
+
+body:json {
+  {
+    "name": "Casa Atualizado"
+  }
+}
